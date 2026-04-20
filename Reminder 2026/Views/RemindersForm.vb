@@ -30,17 +30,17 @@ Public Class RemindersForm
         Reminders.Add(New Reminder() With {.Number = 1,
                                            .IsActive = True,
                                            .Text = "Test",
-                                           .ExecuteFrom = DateTime.Now,
-                                           .ExecuteTo = .ExecuteFrom.AddDays(1),
-                                           .NextExecute = Now,
-                                           .Periodicity = New TimeInterval() With {.IsPeriodic = False, .Interval = New TimeSpan(100000), .Text = "Однократно"}})
+                                           .DateFrom = DateTime.Now,
+                                           .DateTo = .DateFrom.AddDays(1),
+                                           .NextDate = Now,
+                                           .Periodicity = New TimeInterval() With {.Interval = New TimeSpan(100000), .Text = "Однократно"}})
         Reminders.Add(New Reminder() With {.Number = 2,
                                            .IsActive = False,
                                            .Text = "Задание 2",
-                                           .ExecuteFrom = DateTime.Now,
-                                           .ExecuteTo = .ExecuteFrom.AddDays(1),
-                                           .NextExecute = Now,
-                                           .Periodicity = New TimeInterval() With {.IsPeriodic = True, .Interval = New TimeSpan(100000), .Text = "Каждый день"}})
+                                           .DateFrom = DateTime.Now,
+                                           .DateTo = .DateFrom.AddDays(1),
+                                           .NextDate = Now,
+                                           .Periodicity = New TimeInterval() With {.Interval = New TimeSpan(100000), .Text = "Каждый день"}})
 
     End Sub
 
@@ -55,17 +55,17 @@ Public Class RemindersForm
         RemindersDataGridView.Columns.Add(NumberColumn)
 
         Dim DateFromColumn As New DataGridViewTextBoxColumn
-        DateFromColumn.DataPropertyName = NameOf(Reminder.ExecuteFrom)
+        DateFromColumn.DataPropertyName = NameOf(Reminder.DateFrom)
         DateFromColumn.HeaderText = "Выполнять начиная с"
         RemindersDataGridView.Columns.Add(DateFromColumn)
 
         Dim DateNextColumn As New DataGridViewTextBoxColumn
-        DateNextColumn.DataPropertyName = NameOf(Reminder.NextExecute)
+        DateNextColumn.DataPropertyName = NameOf(Reminder.NextDate)
         DateNextColumn.HeaderText = "Следующий раз"
         RemindersDataGridView.Columns.Add(DateNextColumn)
 
         Dim DateToColumn As New DataGridViewTextBoxColumn
-        DateToColumn.DataPropertyName = NameOf(Reminder.ExecuteTo)
+        DateToColumn.DataPropertyName = NameOf(Reminder.DateTo)
         DateToColumn.HeaderText = "Выполнять до"
         RemindersDataGridView.Columns.Add(DateToColumn)
 
@@ -103,6 +103,25 @@ Public Class RemindersForm
     End Sub
 
 #Region "Commands"
+    ''' <summary>
+    ''' Команда в меню формы для создания напоминания.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub AddReminderToolStripButton_Click(sender As Object, e As EventArgs) Handles AddReminderToolStripButton.Click
+        Dim CreateReminderForm As New EditReminderForm(CreateNewReminder:=True)
+
+    End Sub
+
+    ''' <summary>
+    ''' Команда в меню формы для редактирования напоминания.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub EditReminderToolStripButton_Click(sender As Object, e As EventArgs) Handles EditReminderToolStripButton.Click
+
+    End Sub
+
     ''' <summary>
     ''' Команда в меню формы для удаления напоминания.
     ''' </summary>
@@ -152,6 +171,7 @@ Public Class RemindersForm
         AppExit = True
         Close()
     End Sub
+
 
 
 

@@ -3,7 +3,7 @@
     ''' Признак повторяющегося задания.
     ''' </summary>
     ''' <returns>True если задание должно периодически повторяться и False в ином случае.</returns>
-    Property IsPeriodic As Boolean
+    ReadOnly Property IsPeriodic As Boolean
 
     ''' <summary>
     ''' Интервал между началом и следующим выполнением задания.
@@ -16,4 +16,10 @@
     ''' </summary>
     ''' <returns></returns>
     Property Text As String
+
+    ''' <summary>
+    ''' Периодичность повторения напоминания.
+    ''' </summary>
+    ''' <returns></returns>
+    Property FrequencyOfRepeate As Repetitions
 End Interface

@@ -35,26 +35,26 @@ Partial Class RemindersForm
         Me.DeleteReminderToolStripButton = New System.Windows.Forms.ToolStripButton()
         Me.RemindersBindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.RemindersDataGridView = New System.Windows.Forms.DataGridView()
-        Me.RemindersSplitContainer = New System.Windows.Forms.SplitContainer()
-        Me.ReminderGroupBox = New System.Windows.Forms.GroupBox()
-        Me.ReminderTextBox = New System.Windows.Forms.TextBox()
-        Me.RemindersToolTip = New System.Windows.Forms.ToolTip(Me.components)
         Me.RemindersDGVContextMenuStrip = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.CreateReminderToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.EditReminderToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DeleteReminderToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ChangeActivityToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
+        Me.ChangeActivityToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.RemindersSplitContainer = New System.Windows.Forms.SplitContainer()
+        Me.ReminderGroupBox = New System.Windows.Forms.GroupBox()
+        Me.ReminderTextBox = New System.Windows.Forms.TextBox()
+        Me.RemindersToolTip = New System.Windows.Forms.ToolTip(Me.components)
         Me.MainIconContextMenuStrip.SuspendLayout()
         Me.CommandToolStrip.SuspendLayout()
         CType(Me.RemindersBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.RemindersDataGridView, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.RemindersDGVContextMenuStrip.SuspendLayout()
         CType(Me.RemindersSplitContainer, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.RemindersSplitContainer.Panel1.SuspendLayout()
         Me.RemindersSplitContainer.Panel2.SuspendLayout()
         Me.RemindersSplitContainer.SuspendLayout()
         Me.ReminderGroupBox.SuspendLayout()
-        Me.RemindersDGVContextMenuStrip.SuspendLayout()
         Me.SuspendLayout()
         '
         'ReminderNotifyIcon
@@ -151,6 +151,41 @@ Partial Class RemindersForm
         Me.RemindersDataGridView.Size = New System.Drawing.Size(554, 223)
         Me.RemindersDataGridView.TabIndex = 2
         '
+        'RemindersDGVContextMenuStrip
+        '
+        Me.RemindersDGVContextMenuStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CreateReminderToolStripMenuItem, Me.EditReminderToolStripMenuItem, Me.DeleteReminderToolStripMenuItem, Me.ToolStripSeparator1, Me.ChangeActivityToolStripMenuItem})
+        Me.RemindersDGVContextMenuStrip.Name = "RemindersDGVContextMenuStrip"
+        Me.RemindersDGVContextMenuStrip.Size = New System.Drawing.Size(234, 98)
+        '
+        'CreateReminderToolStripMenuItem
+        '
+        Me.CreateReminderToolStripMenuItem.Name = "CreateReminderToolStripMenuItem"
+        Me.CreateReminderToolStripMenuItem.Size = New System.Drawing.Size(233, 22)
+        Me.CreateReminderToolStripMenuItem.Text = "Создать напоминание"
+        '
+        'EditReminderToolStripMenuItem
+        '
+        Me.EditReminderToolStripMenuItem.Name = "EditReminderToolStripMenuItem"
+        Me.EditReminderToolStripMenuItem.Size = New System.Drawing.Size(233, 22)
+        Me.EditReminderToolStripMenuItem.Text = "Редактировать напоминание"
+        '
+        'DeleteReminderToolStripMenuItem
+        '
+        Me.DeleteReminderToolStripMenuItem.Name = "DeleteReminderToolStripMenuItem"
+        Me.DeleteReminderToolStripMenuItem.Size = New System.Drawing.Size(233, 22)
+        Me.DeleteReminderToolStripMenuItem.Text = "Удалить напоминание"
+        '
+        'ToolStripSeparator1
+        '
+        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(230, 6)
+        '
+        'ChangeActivityToolStripMenuItem
+        '
+        Me.ChangeActivityToolStripMenuItem.Name = "ChangeActivityToolStripMenuItem"
+        Me.ChangeActivityToolStripMenuItem.Size = New System.Drawing.Size(233, 22)
+        Me.ChangeActivityToolStripMenuItem.Text = "Изменить активность"
+        '
         'RemindersSplitContainer
         '
         Me.RemindersSplitContainer.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
@@ -200,41 +235,6 @@ Partial Class RemindersForm
         Me.ReminderTextBox.Size = New System.Drawing.Size(546, 92)
         Me.ReminderTextBox.TabIndex = 0
         '
-        'RemindersDGVContextMenuStrip
-        '
-        Me.RemindersDGVContextMenuStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CreateReminderToolStripMenuItem, Me.EditReminderToolStripMenuItem, Me.DeleteReminderToolStripMenuItem, Me.ToolStripSeparator1, Me.ChangeActivityToolStripMenuItem})
-        Me.RemindersDGVContextMenuStrip.Name = "RemindersDGVContextMenuStrip"
-        Me.RemindersDGVContextMenuStrip.Size = New System.Drawing.Size(234, 120)
-        '
-        'CreateReminderToolStripMenuItem
-        '
-        Me.CreateReminderToolStripMenuItem.Name = "CreateReminderToolStripMenuItem"
-        Me.CreateReminderToolStripMenuItem.Size = New System.Drawing.Size(233, 22)
-        Me.CreateReminderToolStripMenuItem.Text = "Создать напоминание"
-        '
-        'EditReminderToolStripMenuItem
-        '
-        Me.EditReminderToolStripMenuItem.Name = "EditReminderToolStripMenuItem"
-        Me.EditReminderToolStripMenuItem.Size = New System.Drawing.Size(233, 22)
-        Me.EditReminderToolStripMenuItem.Text = "Редактировать напоминание"
-        '
-        'DeleteReminderToolStripMenuItem
-        '
-        Me.DeleteReminderToolStripMenuItem.Name = "DeleteReminderToolStripMenuItem"
-        Me.DeleteReminderToolStripMenuItem.Size = New System.Drawing.Size(233, 22)
-        Me.DeleteReminderToolStripMenuItem.Text = "Удалить напоминание"
-        '
-        'ChangeActivityToolStripMenuItem
-        '
-        Me.ChangeActivityToolStripMenuItem.Name = "ChangeActivityToolStripMenuItem"
-        Me.ChangeActivityToolStripMenuItem.Size = New System.Drawing.Size(233, 22)
-        Me.ChangeActivityToolStripMenuItem.Text = "Изменить активность"
-        '
-        'ToolStripSeparator1
-        '
-        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
-        Me.ToolStripSeparator1.Size = New System.Drawing.Size(230, 6)
-        '
         'RemindersForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -252,13 +252,13 @@ Partial Class RemindersForm
         Me.CommandToolStrip.PerformLayout()
         CType(Me.RemindersBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.RemindersDataGridView, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.RemindersDGVContextMenuStrip.ResumeLayout(False)
         Me.RemindersSplitContainer.Panel1.ResumeLayout(False)
         Me.RemindersSplitContainer.Panel2.ResumeLayout(False)
         CType(Me.RemindersSplitContainer, System.ComponentModel.ISupportInitialize).EndInit()
         Me.RemindersSplitContainer.ResumeLayout(False)
         Me.ReminderGroupBox.ResumeLayout(False)
         Me.ReminderGroupBox.PerformLayout()
-        Me.RemindersDGVContextMenuStrip.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

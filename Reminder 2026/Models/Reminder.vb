@@ -8,9 +8,9 @@ Public Class Reminder
     Private _PeriodicityText As String
     Private _IsActive As Boolean
     Private _Text As String
-    Private _ExecuteTo As Date
-    Private _ExecuteFrom As Date
-    Private _NextExecute As Date
+    Private _DateTo As DateTime
+    Private _DateFrom As DateTime
+    Private _NextDate As DateTime
 
     ''' <summary>
     ''' Номер.
@@ -55,12 +55,12 @@ Public Class Reminder
     ''' Дата начала выполнения.
     ''' </summary>
     ''' <returns></returns>
-    Public Property ExecuteTo As DateTime
+    Public Property DateFrom As DateTime
         Get
-            Return _ExecuteTo
+            Return _DateFrom
         End Get
         Set
-            SetValue(Of DateTime)(_ExecuteTo, Value)
+            SetValue(Of DateTime)(_DateFrom, Value)
         End Set
     End Property
 
@@ -68,12 +68,12 @@ Public Class Reminder
     ''' Дата окончания выполнения.
     ''' </summary>
     ''' <returns></returns>
-    Public Property ExecuteFrom As DateTime
+    Public Property DateTo As DateTime
         Get
-            Return _ExecuteFrom
+            Return _DateTo
         End Get
         Set
-            SetValue(Of DateTime)(_ExecuteFrom, Value)
+            SetValue(Of DateTime)(_DateTo, Value)
         End Set
     End Property
 
@@ -81,12 +81,12 @@ Public Class Reminder
     ''' Дата следующего выполнения.
     ''' </summary>
     ''' <returns></returns>
-    Public Property NextExecute As DateTime
+    Public Property NextDate As DateTime
         Get
-            Return _NextExecute
+            Return _NextDate
         End Get
         Set
-            SetValue(Of DateTime)(_NextExecute, Value)
+            SetValue(Of DateTime)(_NextDate, Value)
         End Set
     End Property
 
@@ -96,9 +96,20 @@ Public Class Reminder
     ''' <returns></returns>
     Public Property Periodicity As IPeriodicity
 
+    ''' <summary>
+    ''' Обёртка свойства периодичности для привязки.
+    ''' </summary>
+    ''' <returns></returns>
     Public ReadOnly Property PeriodicityText As String
         Get
             Return Periodicity.Text
         End Get
     End Property
+
+    Public Sub New()
+        Me.DateFrom = DateTime.Now
+        Dim today As DateTime = DateTime.Now
+        Me.DateTo = New DateTime(today.Year, today.Month, today.Day, 23, 59, 0)
+    End Sub
+
 End Class
