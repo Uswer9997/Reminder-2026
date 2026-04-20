@@ -110,7 +110,14 @@ Public Class RemindersForm
     ''' <param name="e"></param>
     Private Sub AddReminderToolStripButton_Click(sender As Object, e As EventArgs) Handles AddReminderToolStripButton.Click
         Dim CreateReminderForm As New EditReminderForm(CreateNewReminder:=True)
+        CreateReminderForm.Text = "Новое напоминание"
+        CreateReminderForm.StartPosition = FormStartPosition.Manual
+        CreateReminderForm.Location = FormHelper.GetLocationPoint(Me, Me.Location, New Point(20, 20))
+        CreateReminderForm.ShowDialog()
+        If CreateReminderForm.DialogResult = DialogResult.OK Then
 
+        End If
+        CreateReminderForm.Dispose()
     End Sub
 
     ''' <summary>
@@ -161,21 +168,26 @@ Public Class RemindersForm
 
 #Region "MainContextMenu"
 
+    ''' <summary>
+    ''' Команда отображения формы настройки напоминаний.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
     Private Sub RemindersToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RemindersToolStripMenuItem.Click
         Me.ShowInTaskbar = True
         Me.WindowState = FormWindowState.Normal
         Me.Show()
     End Sub
 
+    ''' <summary>
+    ''' Команда закрытия приложения.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
     Private Sub ExitToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExitToolStripMenuItem.Click
         AppExit = True
         Close()
     End Sub
-
-
-
-
-
 
 #End Region
 

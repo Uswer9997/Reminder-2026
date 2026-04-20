@@ -66,8 +66,7 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>
-    </ApplicationIcon>
+    <ApplicationIcon>Note.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
@@ -138,6 +137,7 @@
     <Compile Include="Views\SetDateAndTimeForm.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Views\Shared\FormHelper.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Views\RemindersForm.resx">
