@@ -22,8 +22,7 @@ Partial Class EditReminderForm
     'Не изменяйте ее в редакторе исходного кода.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        components = New System.ComponentModel.Container
-
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(EditReminderForm))
         Me.FromToGroupBox = New System.Windows.Forms.GroupBox()
         Me.DateToCheckBox = New System.Windows.Forms.CheckBox()
         Me.DateToButton = New System.Windows.Forms.Button()
@@ -358,6 +357,7 @@ Partial Class EditReminderForm
         Me.Controls.Add(Me.PeriodicityGroupBox)
         Me.Controls.Add(Me.FromToGroupBox)
         Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(204, Byte))
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MinimumSize = New System.Drawing.Size(368, 428)
         Me.Name = "EditReminderForm"
         Me.Text = "Form"

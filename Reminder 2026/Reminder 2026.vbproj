@@ -140,6 +140,9 @@
     <Compile Include="Views\Shared\FormHelper.vb" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Views\EditReminderForm.resx">
+      <DependentUpon>EditReminderForm.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\RemindersForm.resx">
       <DependentUpon>RemindersForm.vb</DependentUpon>
     </EmbeddedResource>
@@ -148,6 +151,9 @@
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\SetDateAndTimeForm.resx">
+      <DependentUpon>SetDateAndTimeForm.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
