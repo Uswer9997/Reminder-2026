@@ -238,7 +238,7 @@ Partial Class RemindersForm
         '
         'ReminderTimer
         '
-        Me.ReminderTimer.Interval = 5000
+        Me.ReminderTimer.Interval = 60000
         '
         'RemindersForm
         '

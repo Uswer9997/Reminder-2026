@@ -220,7 +220,7 @@
                 periodic = New TimeInterval()
                 periodic.Interval = TimeSpan.FromDays(days)
                 periodic.FrequencyOfRepeate = Repetitions.SomeDays
-                periodic.Text = $"Каждый {days} час"
+                periodic.Text = $"Каждый {days} день"
             Case Repetitions.EveryMonth
                 periodic = New TimeInterval()
                 periodic.Interval = TimeSpan.Zero
