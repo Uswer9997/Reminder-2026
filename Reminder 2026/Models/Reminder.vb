@@ -1,9 +1,12 @@
-﻿''' <summary>
+﻿Imports System.Xml
+Imports System.Xml.Schema
+Imports System.Xml.Serialization
+''' <summary>
 ''' Описывает 'Напоминание'
 ''' </summary>
 Public Class Reminder
     Inherits Notifier
-    Implements ICloneable
+    Implements ICloneable ', IXmlSerializable
 
     Private _Number As Integer
     Private _PeriodicityText As String
@@ -109,12 +112,14 @@ Public Class Reminder
     ''' Интервал выполнения для повторяющихся напоминаний.
     ''' </summary>
     ''' <returns></returns>
+    <System.Xml.Serialization.XmlIgnoreAttribute>
     Public Property Periodicity As IPeriodicity
 
     ''' <summary>
     ''' Обёртка свойства периодичности для привязки.
     ''' </summary>
     ''' <returns></returns>
+    <System.Xml.Serialization.XmlIgnoreAttribute>
     Public ReadOnly Property PeriodicityText As String
         Get
             Return Periodicity.Text
@@ -133,4 +138,16 @@ Public Class Reminder
         MeClone.Periodicity = CType(Me.Periodicity, ICloneable).Clone()
         Return MeClone
     End Function
+
+    'Public Function GetSchema() As XmlSchema Implements IXmlSerializable.GetSchema
+    '    Return Nothing
+    'End Function
+
+    'Public Sub ReadXml(reader As XmlReader) Implements IXmlSerializable.ReadXml
+    '    Me.DateFrom = reader.ReadContentAsDateTime
+    'End Sub
+
+    'Public Sub WriteXml(writer As XmlWriter) Implements IXmlSerializable.WriteXml
+    '    Throw New NotImplementedException()
+    'End Sub
 End Class

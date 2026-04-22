@@ -1,4 +1,5 @@
 ﻿Imports System.ComponentModel
+Imports System.IO
 Imports Reminder_2026
 
 Public Class RemindersForm
@@ -6,6 +7,8 @@ Public Class RemindersForm
     ''' Признак завершения работы программы.
     ''' </summary>
     Private AppExit As Boolean = False
+
+    Private sourceFile As String = Path.Combine(Application.StartupPath, "Reminders.xml")
 
     ''' <summary>
     ''' Ссылка на форму отображения напоминаний.
@@ -36,6 +39,16 @@ Public Class RemindersForm
 
 
     Private Sub LoadReminders()
+        Dim serializer As New Xml.Serialization.XmlSerializer(GetType(List(Of Reminder)))
+        ' создадим пустой файл если его нет
+        If Not IO.File.Exists(sourceFile) Then
+            SaveReminders()
+        End If
+
+        Using fs As New System.IO.FileStream(sourceFile, FileMode.Open)
+            serializer.Deserialize(fs)
+        End Using
+
         Reminders.Add(New Reminder() With {.Number = 1,
                                            .IsActive = True,
                                            .Text = "Test",
@@ -262,7 +275,6 @@ Public Class RemindersForm
         CreateReminderForm.Location = FormHelper.GetLocationPoint(Me, Me.Location, New Point(20, 20))
         CreateReminderForm.ShowDialog()
         If CreateReminderForm.DialogResult = DialogResult.OK Then
-            'CreateReminderForm.Reminder.Number = RemindersBindingSource.Count + 1
             RemindersBindingSource.Add(CreateReminderForm.Reminder)
         End If
         CreateReminderForm.Dispose()
@@ -317,9 +329,17 @@ Public Class RemindersForm
 
     Private Sub RemindersForm_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
         Hide()
+        SaveReminders()
         If AppExit = False Then
             e.Cancel = True
         End If
+    End Sub
+
+    Private Sub SaveReminders()
+        Dim serializer As New Xml.Serialization.XmlSerializer(GetType(List(Of Reminder)))
+        Using fs As New System.IO.FileStream(sourceFile, FileMode.OpenOrCreate)
+            serializer.Serialize(fs, Reminders)
+        End Using
     End Sub
 
 #Region "MainContextMenu"
