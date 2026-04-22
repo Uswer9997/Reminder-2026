@@ -305,9 +305,9 @@ Public Class RemindersForm
 
     Private Sub RemindersForm_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
         Hide()
-        'If AppExit = False Then
-        '    e.Cancel = True
-        'End If
+        If AppExit = False Then
+            e.Cancel = True
+        End If
     End Sub
 
 #Region "MainContextMenu"
