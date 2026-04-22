@@ -26,6 +26,7 @@ Public Class RemindersForm
         ' Добавить код инициализации после вызова InitializeComponent().
         Reminders = New List(Of Reminder)
         LoadReminders() ' загрузим сохранённые напоминания
+        AddHandler RemindersBindingSource.ListChanged, AddressOf ReNumberReminders
         RemindersBindingSource.DataSource = Reminders ' привяжем задания к объекту привязке
         ConfigureReminderDataGridView() ' настроим сетку для отображения напоминаний
         ReminderTextBox.DataBindings.Add("Text", RemindersBindingSource, "Text") ' 
@@ -52,6 +53,17 @@ Public Class RemindersForm
                                            .ExecIfLate = True,
                                            .Periodicity = New TimeInterval() With {.Interval = New TimeSpan(100000), .Text = "Каждый день"}})
 
+    End Sub
+
+    ''' <summary>
+    ''' Перенумерует список напоминаний.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub ReNumberReminders(sender As Object, e As ListChangedEventArgs)
+        For i As Integer = 0 To RemindersBindingSource.Count - 1
+            RemindersBindingSource(i).Number = i + 1
+        Next
     End Sub
 
     ''' <summary>
@@ -250,7 +262,7 @@ Public Class RemindersForm
         CreateReminderForm.Location = FormHelper.GetLocationPoint(Me, Me.Location, New Point(20, 20))
         CreateReminderForm.ShowDialog()
         If CreateReminderForm.DialogResult = DialogResult.OK Then
-            CreateReminderForm.Reminder.Number = RemindersBindingSource.Count + 1
+            'CreateReminderForm.Reminder.Number = RemindersBindingSource.Count + 1
             RemindersBindingSource.Add(CreateReminderForm.Reminder)
         End If
         CreateReminderForm.Dispose()
