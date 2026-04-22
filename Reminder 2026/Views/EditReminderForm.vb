@@ -7,14 +7,13 @@
 
     Private MinutsList As List(Of Integer) ' список минут
     Private HoursList As List(Of Integer) ' список часов
+    Private SelectedPeriodicity As Repetitions ' выбранное значение периодичности напоминания
 
     Public Sub New(ByVal CreateNewReminder As Boolean)
 
         If (CreateNewReminder = True) Or (Me.Reminder Is Nothing) Then
             Me.Reminder = New Reminder()
             Me.Reminder.Periodicity = New OneTime()
-        Else
-            ' тут надо клонировать напоминание
         End If
 
         ' Этот вызов является обязательным для конструктора.
@@ -52,9 +51,34 @@
         ' установим привязки свойств к элементам управления
         ReminderTextBox.DataBindings.Add("Text", Me.Reminder, "Text")
         LateCheckBox.DataBindings.Add("Checked", Me.Reminder, "ExecIfLate")
+
+        Select Case Me.Reminder.Periodicity.FrequencyOfRepeate
+            Case Repetitions.SomeMinuts
+                MinutsRadioButton.Checked = True
+                MinutsComboBox.SelectedItem = Me.Reminder.Periodicity.Interval.Minutes
+            Case Repetitions.SomeHours
+                HoursRadioButton.Checked = True
+                HoursComboBox.SelectedItem = Me.Reminder.Periodicity.Interval.Hours
+            Case Repetitions.SomeDays
+                DaysRadioButton.Checked = True
+                DaysNumericUpDown.Value = Me.Reminder.Periodicity.Interval.Days
+            Case Repetitions.EveryMonth
+                MonthRadioButton.Checked = True
+            Case Repetitions.EveryYear
+                YearRadioButton.Checked = True
+            Case Else
+                OnceRadioButton.Checked = True
+        End Select
     End Sub
 
     Private Sub OkButton_Click(sender As Object, e As EventArgs) Handles OkButton.Click
+        Me.Reminder.IsActive = True
+        BuildPeriodicy()
+        SetNextTime(Me.Reminder)
+        ' если снят флаг конечной даты 
+        If DateToCheckBox.Checked = False Then
+            Me.Reminder.DateTo = Nothing
+        End If
         Me.DialogResult = DialogResult.OK
         Close()
     End Sub
@@ -90,7 +114,6 @@
         SetDateForm.ShowDialog()
         If SetDateForm.DialogResult = DialogResult.OK Then
             Me.Reminder.DateFrom = SetDateForm.DateAndTime
-            SetNextTime(Me.Reminder)
         End If
         SetDateForm.Dispose()
     End Sub
@@ -104,7 +127,6 @@
         SetDateForm.ShowDialog()
         If SetDateForm.DialogResult = DialogResult.OK Then
             Me.Reminder.DateTo = SetDateForm.DateAndTime
-            SetNextTime(Me.Reminder)
         End If
         SetDateForm.Dispose()
     End Sub
@@ -119,16 +141,11 @@
     End Sub
 
     ''' <summary>
-    ''' Устанавливает дату следующего выполнения и проверяет корректность установленных дат.
+    ''' Устанавливает дату следующего выполнения.
     ''' </summary>
     ''' <param name="currentReminder">Обрабатываемое напоминание.</param>
     Private Sub SetNextTime(ByVal currentReminder As Reminder)
         Dim thisMoment As DateTime = DateTime.Now
-
-        '' если даты заданы не верно
-        'If currentReminder.DateTo < currentReminder.DateFrom Then
-        '    currentReminder.DateTo = currentReminder.DateFrom
-        'End If
 
         If currentReminder.Periodicity.IsPeriodic = True Then
             Dim newNextDate As DateTime ' дата следующего выполнения
@@ -167,82 +184,105 @@
 
 #Region "Periodicity" ' параметры периодичности
 
+    ''' <summary>
+    ''' Устанавливает периодичность напоминания в соответствии с выбранными параметрами.
+    ''' </summary>
+    Private Sub BuildPeriodicy()
+        Dim periodic As IPeriodicity = New OneTime()
+
+        Select Case SelectedPeriodicity
+            Case Repetitions.Once
+                periodic.Interval = TimeSpan.Zero
+            Case Repetitions.SomeMinuts
+                Dim minuts As Integer = MinutsComboBox.SelectedValue
+
+                periodic = New TimeInterval()
+                periodic.Interval = TimeSpan.FromMinutes(minuts)
+                periodic.FrequencyOfRepeate = Repetitions.SomeMinuts
+
+                If minuts = 1 Then
+                    periodic.Text = $"Каждую минуту"
+                ElseIf minuts < 5 Then
+                    periodic.Text = $"Каждые {minuts} минуты"
+                Else
+                    periodic.Text = $"Каждые {minuts} минут"
+                End If
+            Case Repetitions.SomeHours
+                Dim hours As Integer = HoursComboBox.SelectedValue
+
+                periodic = New TimeInterval()
+                periodic.Interval = TimeSpan.FromHours(hours)
+                periodic.FrequencyOfRepeate = Repetitions.SomeHours
+                periodic.Text = $"Каждый {hours} час"
+            Case Repetitions.SomeDays
+                Dim days As Integer = DaysNumericUpDown.Value
+
+                periodic = New TimeInterval()
+                periodic.Interval = TimeSpan.FromDays(days)
+                periodic.FrequencyOfRepeate = Repetitions.SomeDays
+                periodic.Text = $"Каждый {days} час"
+            Case Repetitions.EveryMonth
+                periodic = New TimeInterval()
+                periodic.Interval = TimeSpan.Zero
+                periodic.FrequencyOfRepeate = Repetitions.EveryMonth
+                periodic.Text = "Ежемесячно"
+            Case Repetitions.EveryYear
+                periodic = New TimeInterval()
+                periodic.Interval = TimeSpan.Zero
+                periodic.FrequencyOfRepeate = Repetitions.EveryYear
+                periodic.Text = "Ежегодно"
+        End Select
+
+        Me.Reminder.Periodicity = periodic
+    End Sub
+
     Private Sub MinutsRadioButton_CheckedChanged(sender As Object, e As EventArgs) Handles MinutsRadioButton.CheckedChanged
         If MinutsRadioButton.Checked = True Then
-            Dim minuts As Integer = MinutsComboBox.SelectedValue
-
-            Dim periodic As IPeriodicity = New TimeInterval()
-            periodic.Interval = TimeSpan.FromMinutes(minuts)
-            periodic.FrequencyOfRepeate = Repetitions.SomeMinuts
-
-            If minuts = 1 Then
-                periodic.Text = $"Каждую минуту"
-            ElseIf minuts < 5 Then
-                periodic.Text = $"Каждые {minuts} минуты"
-            Else
-                periodic.Text = $"Каждые {minuts} минут"
-            End If
-            Me.Reminder.Periodicity = periodic
+            SelectedPeriodicity = Repetitions.SomeMinuts
         End If
     End Sub
 
     Private Sub HoursRadioButton_CheckedChanged(sender As Object, e As EventArgs) Handles HoursRadioButton.CheckedChanged
         If HoursRadioButton.Checked = True Then
-            Dim hours As Integer = HoursComboBox.SelectedValue
-
-            Dim periodic As IPeriodicity = New TimeInterval()
-            periodic.Interval = TimeSpan.FromHours(hours)
-            periodic.FrequencyOfRepeate = Repetitions.SomeHours
-            periodic.Text = $"Каждый {HoursComboBox.SelectedValue} час"
-
-            Me.Reminder.Periodicity = periodic
+            SelectedPeriodicity = Repetitions.SomeHours
         End If
     End Sub
 
     Private Sub DaysRadioButton_CheckedChanged(sender As Object, e As EventArgs) Handles DaysRadioButton.CheckedChanged
         If DaysRadioButton.Checked = True Then
-            Dim days As Integer = DaysNumericUpDown.Value
-
-            Dim periodic As IPeriodicity = New TimeInterval()
-            periodic.Interval = TimeSpan.FromDays(days)
-            periodic.FrequencyOfRepeate = Repetitions.SomeDays
-            periodic.Text = $"Каждый {days} час"
-
-            Me.Reminder.Periodicity = periodic
+            SelectedPeriodicity = Repetitions.SomeDays
         End If
     End Sub
 
     Private Sub MonthRadioButton_CheckedChanged(sender As Object, e As EventArgs) Handles MonthRadioButton.CheckedChanged
         If MonthRadioButton.Checked = True Then
-            Dim periodic As IPeriodicity = New TimeInterval()
-            periodic.Interval = TimeSpan.Zero
-            periodic.FrequencyOfRepeate = Repetitions.EveryMonth
-            periodic.Text = "Ежемесячно"
-
-            Me.Reminder.Periodicity = periodic
+            SelectedPeriodicity = Repetitions.EveryMonth
         End If
     End Sub
 
     Private Sub YearRadioButton_CheckedChanged(sender As Object, e As EventArgs) Handles YearRadioButton.CheckedChanged
         If YearRadioButton.Checked = True Then
-            Dim periodic As IPeriodicity = New TimeInterval()
-            periodic.Interval = TimeSpan.Zero
-            periodic.FrequencyOfRepeate = Repetitions.EveryYear
-            periodic.Text = "Ежегодно"
-
-            Me.Reminder.Periodicity = periodic
+            SelectedPeriodicity = Repetitions.EveryYear
         End If
     End Sub
 
     Private Sub OnceRadioButton_CheckedChanged(sender As Object, e As EventArgs) Handles OnceRadioButton.CheckedChanged
         If OnceRadioButton.Checked = True Then
-            Dim periodic As IPeriodicity = New OneTime()
-            periodic.Interval = TimeSpan.Zero
-
-            Me.Reminder.Periodicity = periodic
+            SelectedPeriodicity = Repetitions.Once
         End If
     End Sub
 
+    Private Sub MinutsComboBox_Enter(sender As Object, e As EventArgs) Handles MinutsComboBox.Enter
+        MinutsRadioButton.Checked = True
+    End Sub
+
+    Private Sub HoursComboBox_Enter(sender As Object, e As EventArgs) Handles HoursComboBox.Enter
+        HoursRadioButton.Checked = True
+    End Sub
+
+    Private Sub DaysNumericUpDown_Enter(sender As Object, e As EventArgs) Handles DaysNumericUpDown.Enter
+        DaysRadioButton.Checked = True
+    End Sub
 
 #End Region
 
