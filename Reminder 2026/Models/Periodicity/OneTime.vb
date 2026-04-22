@@ -3,7 +3,7 @@
 ''' Описывает интервал однократного напоминания.
 ''' </summary>
 Public Class OneTime
-    Implements IPeriodicity
+    Implements IPeriodicity, ICloneable
 
     Private _Text As String = "Один раз"
 
@@ -34,4 +34,10 @@ Public Class OneTime
             End If
         End Set
     End Property
+
+    Public Function Clone() As Object Implements ICloneable.Clone
+        Dim MeClone As OneTime = Me.MemberwiseClone
+
+        Return MeClone
+    End Function
 End Class

@@ -49,7 +49,9 @@
         ' установим привязку к элементу управления
         DateToLabel.DataBindings.Add(DateToBinding)
 
+        ' установим привязки свойств к элементам управления
         ReminderTextBox.DataBindings.Add("Text", Me.Reminder, "Text")
+        LateCheckBox.DataBindings.Add("Checked", Me.Reminder, "ExecIfLate")
     End Sub
 
     Private Sub OkButton_Click(sender As Object, e As EventArgs) Handles OkButton.Click
@@ -63,7 +65,11 @@
     End Sub
 
 
-
+    ''' <summary>
+    ''' Отключает и включает контролы настройки даты окончания.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
     Private Sub DateToCheckBox_CheckedChanged(sender As Object, e As EventArgs) Handles DateToCheckBox.CheckedChanged
         If DateToCheckBox.Checked = True Then
             DateToLabel.Enabled = True
@@ -80,10 +86,11 @@
         SetDateForm.Text = "Выполнять начиная с:"
         SetDateForm.DateAndTime = Me.Reminder.DateFrom
         SetDateForm.StartPosition = FormStartPosition.Manual
-        SetDateForm.Location = GetLocationPoint(Me.Location, New Point(22, 90))
+        SetDateForm.Location = FormHelper.GetLocationPoint(Me, Me.Location, New Point(22, 90))
         SetDateForm.ShowDialog()
         If SetDateForm.DialogResult = DialogResult.OK Then
             Me.Reminder.DateFrom = SetDateForm.DateAndTime
+            SetNextTime(Me.Reminder)
         End If
         SetDateForm.Dispose()
     End Sub
@@ -93,35 +100,70 @@
         SetDateForm.Text = "Выполнять до:"
         SetDateForm.DateAndTime = Me.Reminder.DateTo
         SetDateForm.StartPosition = FormStartPosition.Manual
-        SetDateForm.Location = GetLocationPoint(Me.Location, New Point(22, 126))
+        SetDateForm.Location = FormHelper.GetLocationPoint(Me, Me.Location, New Point(22, 126))
         SetDateForm.ShowDialog()
         If SetDateForm.DialogResult = DialogResult.OK Then
             Me.Reminder.DateTo = SetDateForm.DateAndTime
+            SetNextTime(Me.Reminder)
         End If
         SetDateForm.Dispose()
     End Sub
 
+
+    Private Sub LateCheckBox_CheckedChanged(sender As Object, e As EventArgs) Handles LateCheckBox.CheckedChanged
+        If LateCheckBox.Checked = True Then
+            Me.Reminder.ExecIfLate = True
+        Else
+            Me.Reminder.ExecIfLate = False
+        End If
+    End Sub
+
     ''' <summary>
-    ''' Вызвращает точку всегда находящуюся на экране.
+    ''' Устанавливает дату следующего выполнения и проверяет корректность установленных дат.
     ''' </summary>
-    ''' <param name="originalPoint">Исходные координаты точки.</param>
-    ''' <param name="Offset">Желаемое смещение точки.</param>
-    ''' <returns></returns>
-    Private Function GetLocationPoint(ByVal originalPoint As Point, ByVal Offset As Point) As Point
-        Dim newPoint As Point = originalPoint
-        newPoint.X = newPoint.X + Offset.X
-        Dim xx = Screen.FromControl(Me).WorkingArea
-        If newPoint.X > Screen.FromControl(Me).WorkingArea.Width Then
-            newPoint.X = originalPoint.X
+    ''' <param name="currentReminder">Обрабатываемое напоминание.</param>
+    Private Sub SetNextTime(ByVal currentReminder As Reminder)
+        Dim thisMoment As DateTime = DateTime.Now
+
+        '' если даты заданы не верно
+        'If currentReminder.DateTo < currentReminder.DateFrom Then
+        '    currentReminder.DateTo = currentReminder.DateFrom
+        'End If
+
+        If currentReminder.Periodicity.IsPeriodic = True Then
+            Dim newNextDate As DateTime ' дата следующего выполнения
+            ' установим текущее значение даты следующего выполнения
+            If currentReminder.NextDate Is Nothing Then
+                newNextDate = currentReminder.DateFrom ' отсчёт от начала выполнения
+            Else
+                newNextDate = currentReminder.NextDate ' отсчёт от предыдущей даты выполнения
+            End If
+            ' установим (изменим) дату следующего выполнения
+            Select Case currentReminder.Periodicity.FrequencyOfRepeate
+                Case Repetitions.SomeMinuts
+                    currentReminder.NextDate = newNextDate.AddMinutes(currentReminder.Periodicity.Interval.TotalMinutes)
+                Case Repetitions.SomeHours
+                    currentReminder.NextDate = newNextDate.AddHours(currentReminder.Periodicity.Interval.TotalHours)
+                Case Repetitions.SomeDays
+                    currentReminder.NextDate = newNextDate.AddDays(currentReminder.Periodicity.Interval.TotalDays)
+                Case Repetitions.EveryMonth
+                    currentReminder.NextDate = newNextDate.AddMonths(1)
+                Case Repetitions.EveryYear
+                    currentReminder.NextDate = newNextDate.AddYears(1)
+            End Select
         End If
 
-        newPoint.Y = newPoint.Y + Offset.Y
-        If newPoint.Y > Screen.FromControl(Me).WorkingArea.Height Then
-            newPoint.Y = originalPoint.Y
+        ' если следующий момент выполнения превышает дату окончания выполнения
+        If currentReminder.NextDate > currentReminder.DateTo Then
+            currentReminder.IsActive = False
+            currentReminder.NextDate = Nothing
         End If
 
-        Return newPoint
-    End Function
+        ' если создано напоминание с прошедшими датами
+        If currentReminder.DateTo < thisMoment Then
+            currentReminder.IsActive = False
+        End If
+    End Sub
 
 #Region "Periodicity" ' параметры периодичности
 
@@ -200,6 +242,7 @@
             Me.Reminder.Periodicity = periodic
         End If
     End Sub
+
 
 #End Region
 

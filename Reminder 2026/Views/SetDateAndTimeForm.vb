@@ -29,6 +29,7 @@ Public Class SetDateAndTimeForm
     Private Sub SetDateAndTimeForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         'ReminderDateTimePicker.DataBindings.Add("Value", Me, "DateAndTime")
         ReminderMonthCalendar.DataBindings.Add("SelectionStart", Me, "DateAndTime")
+        ReminderTimePicker.Value = Me.DateAndTime
     End Sub
 
     Private Sub ReminderMonthCalendar_DateChanged(sender As Object, e As DateRangeEventArgs) Handles ReminderMonthCalendar.DateChanged

@@ -1,6 +1,6 @@
 ﻿Public Class TimeInterval
     Inherits Notifier
-    Implements IPeriodicity
+    Implements IPeriodicity, ICloneable
 
     Private _IsPeriodic As Boolean
     Private _Interval As TimeSpan
@@ -40,4 +40,10 @@
             SetValue(Of Repetitions)(_FrequencyOfRepeate, Value)
         End Set
     End Property
+
+    Public Function Clone() As Object Implements ICloneable.Clone
+        Dim MeClone As TimeInterval = Me.MemberwiseClone
+
+        Return MeClone
+    End Function
 End Class

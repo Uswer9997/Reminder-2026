@@ -1,10 +1,17 @@
 ﻿Imports System.ComponentModel
+Imports Reminder_2026
 
 Public Class RemindersForm
     ''' <summary>
     ''' Признак завершения работы программы.
     ''' </summary>
     Private AppExit As Boolean = False
+
+    ''' <summary>
+    ''' Ссылка на форму отображения напоминаний.
+    ''' </summary>
+    ''' <remarks>Если эта ссылка не null, то значит форма отображается и следует работать с формой по этой ссылке.</remarks>
+    Friend DisplayReminderForm As DisplayRemindersForm
 
     ''' <summary>
     ''' Коллекция напоминаний.
@@ -23,6 +30,7 @@ Public Class RemindersForm
         ConfigureReminderDataGridView() ' настроим сетку для отображения напоминаний
         ReminderTextBox.DataBindings.Add("Text", RemindersBindingSource, "Text") ' 
         RemindersBindingSource.ResetBindings(False) ' вызовем обновление объекта привязки
+        ReminderTimer.Start()
     End Sub
 
 
@@ -32,14 +40,16 @@ Public Class RemindersForm
                                            .Text = "Test",
                                            .DateFrom = DateTime.Now,
                                            .DateTo = .DateFrom.AddDays(1),
-                                           .NextDate = Now,
-                                           .Periodicity = New TimeInterval() With {.Interval = New TimeSpan(100000), .Text = "Однократно"}})
+                                           .NextDate = Nothing,
+                                           .ExecIfLate = True,
+                                           .Periodicity = New OneTime()})
         Reminders.Add(New Reminder() With {.Number = 2,
                                            .IsActive = False,
                                            .Text = "Задание 2",
                                            .DateFrom = DateTime.Now,
                                            .DateTo = .DateFrom.AddDays(1),
                                            .NextDate = Now,
+                                           .ExecIfLate = True,
                                            .Periodicity = New TimeInterval() With {.Interval = New TimeSpan(100000), .Text = "Каждый день"}})
 
     End Sub
@@ -102,6 +112,106 @@ Public Class RemindersForm
         End If
     End Sub
 
+    ''' <summary>
+    ''' Обработчик таймера приложения. Выполняет проверку наступления момента напоминаний.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub ReminderTimer_Tick(sender As Object, e As EventArgs) Handles ReminderTimer.Tick
+        Dim ThisMoment As DateTime = DateTime.Now
+        ReminderTimer.Stop()
+
+        For Each cRem As Reminder In RemindersBindingSource
+            If cRem.IsActive Then
+                If RequiredToComplete(cRem) = True Then
+                    ' тут показываем напоминание
+                    If DisplayReminderForm Is Nothing Then
+                        DisplayReminderForm = New DisplayRemindersForm()
+                        DisplayReminderForm.Owner = Me
+                        DisplayReminderForm.Show()
+                    End If
+
+                    DisplayReminderForm.Reminders.Add(cRem)
+                    SetNextTime(cRem) ' установим следующую дату напоминания.
+                    DisplayReminderForm.BringToFront()
+
+                End If
+            End If
+        Next
+
+        ReminderTimer.Start()
+    End Sub
+
+
+    ''' <summary>
+    ''' Проверяет напоминание на предмет наступления момента его выполнения.
+    ''' </summary>
+    ''' <param name="currentReminder">Проверяемое напоминание.</param>
+    ''' <returns>Возвращает True если напоминание необходимо выполнить и False в противном случае.</returns>
+    Private Function RequiredToComplete(ByVal currentReminder As Reminder) As Boolean
+        Dim thisMoment As DateTime = DateTime.Now
+        ' проверяем поле даты следующего выполнения.
+        If (currentReminder.NextDate IsNot Nothing) AndAlso (currentReminder.NextDate < thisMoment) Then
+            Return True
+        End If
+
+        ' если включен флаг "выполнять, когда опаздывает", то ориентируемся на дату начала напоминания.
+        If (currentReminder.NextDate Is Nothing) And currentReminder.ExecIfLate And (currentReminder.DateFrom < thisMoment) Then
+            Return True
+        End If
+
+        Return False
+    End Function
+
+    ''' <summary>
+    ''' Устанавливает дату следующего выполнения и снимает флаг активности при необходимости.
+    ''' </summary>
+    ''' <param name="currentReminder">Обрабатываемое напоминание.</param>
+    Private Sub SetNextTime(ByVal currentReminder As Reminder)
+        Dim thisMoment As DateTime = DateTime.Now
+
+        ' если наступил момент окончания напоминаний.
+        If currentReminder.DateTo < thisMoment Then
+            currentReminder.IsActive = False
+            currentReminder.NextDate = Nothing
+            Return
+        End If
+
+        If currentReminder.Periodicity.IsPeriodic = True Then
+            Dim newNextDate As DateTime ' дата следующего выполнения
+            ' установим текущее значение даты следующего выполнения
+            If currentReminder.NextDate Is Nothing Then
+                newNextDate = currentReminder.DateFrom ' отсчёт от начала выполнения
+            Else
+                newNextDate = currentReminder.NextDate ' отсчёт от предыдущей даты выполнения
+            End If
+            ' установим (изменим) дату следующего выполнения
+            Select Case currentReminder.Periodicity.FrequencyOfRepeate
+                Case Repetitions.SomeMinuts
+                    currentReminder.NextDate = newNextDate.AddMinutes(currentReminder.Periodicity.Interval.TotalMinutes)
+                Case Repetitions.SomeHours
+                    currentReminder.NextDate = newNextDate.AddHours(currentReminder.Periodicity.Interval.TotalHours)
+                Case Repetitions.SomeDays
+                    currentReminder.NextDate = newNextDate.AddDays(currentReminder.Periodicity.Interval.TotalDays)
+                Case Repetitions.EveryMonth
+                    currentReminder.NextDate = newNextDate.AddMonths(1)
+                Case Repetitions.EveryYear
+                    currentReminder.NextDate = newNextDate.AddYears(1)
+            End Select
+        Else
+            ' у не повторяющихся напоминаний сразу снимаем флаг выполнения,
+            ' так как их выполнение в текущем методе считается произошедшим.
+            currentReminder.IsActive = False
+            Return
+        End If
+
+        ' если следующий момент выполнения превышает дату окончания выполнения
+        If currentReminder.NextDate > currentReminder.DateTo Then
+            currentReminder.IsActive = False
+            currentReminder.NextDate = Nothing
+        End If
+    End Sub
+
 #Region "Commands"
     ''' <summary>
     ''' Команда в меню формы для создания напоминания.
@@ -109,15 +219,7 @@ Public Class RemindersForm
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
     Private Sub AddReminderToolStripButton_Click(sender As Object, e As EventArgs) Handles AddReminderToolStripButton.Click
-        Dim CreateReminderForm As New EditReminderForm(CreateNewReminder:=True)
-        CreateReminderForm.Text = "Новое напоминание"
-        CreateReminderForm.StartPosition = FormStartPosition.Manual
-        CreateReminderForm.Location = FormHelper.GetLocationPoint(Me, Me.Location, New Point(20, 20))
-        CreateReminderForm.ShowDialog()
-        If CreateReminderForm.DialogResult = DialogResult.OK Then
-
-        End If
-        CreateReminderForm.Dispose()
+        CreateReminder()
     End Sub
 
     ''' <summary>
@@ -126,7 +228,7 @@ Public Class RemindersForm
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
     Private Sub EditReminderToolStripButton_Click(sender As Object, e As EventArgs) Handles EditReminderToolStripButton.Click
-
+        EditReminder()
     End Sub
 
     ''' <summary>
@@ -135,21 +237,63 @@ Public Class RemindersForm
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
     Private Sub DeleteReminderToolStripButton_Click(sender As Object, e As EventArgs) Handles DeleteReminderToolStripButton.Click
-        DeleteCurrentReminder()
+        DeleteReminder()
+    End Sub
+
+    ''' <summary>
+    ''' Вызывает форму создания нового напоминание.
+    ''' </summary>
+    Private Sub CreateReminder()
+        Dim CreateReminderForm As New EditReminderForm(CreateNewReminder:=True)
+        CreateReminderForm.Text = "Новое напоминание"
+        CreateReminderForm.StartPosition = FormStartPosition.Manual
+        CreateReminderForm.Location = FormHelper.GetLocationPoint(Me, Me.Location, New Point(20, 20))
+        CreateReminderForm.ShowDialog()
+        If CreateReminderForm.DialogResult = DialogResult.OK Then
+            CreateReminderForm.Reminder.Number = RemindersBindingSource.Count + 1
+            RemindersBindingSource.Add(CreateReminderForm.Reminder)
+        End If
+        CreateReminderForm.Dispose()
+    End Sub
+
+    ''' <summary>
+    ''' Вызывает форму редактирования напоминания.
+    ''' </summary>
+    Private Sub EditReminder()
+        Dim EditForm As New EditReminderForm(CreateNewReminder:=False)
+        EditForm.Text = "Изменить напоминание"
+        EditForm.StartPosition = FormStartPosition.Manual
+        EditForm.Location = FormHelper.GetLocationPoint(Me, Me.Location, New Point(20, 20))
+
+        Dim currentReminderIndex As Integer = RemindersBindingSource.Position
+        EditForm.Reminder = RemindersBindingSource.Current.Clone()
+        EditForm.ShowDialog()
+        If EditForm.DialogResult = DialogResult.OK Then
+            RemindersBindingSource(currentReminderIndex) = EditForm.Reminder
+        End If
+        EditForm.Dispose()
     End Sub
 
     ''' <summary>
     ''' Удаляет текущиее напоминание.
     ''' </summary>
-    Private Sub DeleteCurrentReminder()
+    Private Sub DeleteReminder()
         RemindersBindingSource.RemoveCurrent()
     End Sub
 
 #Region "DataGridView commands"
     ' команды контекстного меню DataGridView напоминаний
 
+    Private Sub CreateReminderToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateReminderToolStripMenuItem.Click
+        CreateReminder()
+    End Sub
+
+    Private Sub EditReminderToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EditReminderToolStripMenuItem.Click
+        EditReminder()
+    End Sub
+
     Private Sub DeleteReminderToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeleteReminderToolStripMenuItem.Click
-        DeleteCurrentReminder()
+        DeleteReminder()
     End Sub
 
     Private Sub ChangeActivityToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeActivityToolStripMenuItem.Click
@@ -187,6 +331,21 @@ Public Class RemindersForm
     Private Sub ExitToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExitToolStripMenuItem.Click
         AppExit = True
         Close()
+    End Sub
+
+    ''' <summary>
+    ''' Команда запуска и остановки процесса обработки напоминаний.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub IsActiveToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles IsActiveToolStripMenuItem.Click
+        If IsActiveToolStripMenuItem.Checked = True Then
+            IsActiveToolStripMenuItem.Checked = False
+            ReminderTimer.Stop()
+        Else
+            IsActiveToolStripMenuItem.Checked = True
+            ReminderTimer.Start()
+        End If
     End Sub
 
 #End Region

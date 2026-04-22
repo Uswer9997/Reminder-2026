@@ -33,7 +33,6 @@ Partial Class RemindersForm
         Me.AddReminderToolStripButton = New System.Windows.Forms.ToolStripButton()
         Me.EditReminderToolStripButton = New System.Windows.Forms.ToolStripButton()
         Me.DeleteReminderToolStripButton = New System.Windows.Forms.ToolStripButton()
-        Me.RemindersBindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.RemindersDataGridView = New System.Windows.Forms.DataGridView()
         Me.RemindersDGVContextMenuStrip = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.CreateReminderToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -41,15 +40,17 @@ Partial Class RemindersForm
         Me.DeleteReminderToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.ChangeActivityToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.RemindersBindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.RemindersSplitContainer = New System.Windows.Forms.SplitContainer()
         Me.ReminderGroupBox = New System.Windows.Forms.GroupBox()
         Me.ReminderTextBox = New System.Windows.Forms.TextBox()
         Me.RemindersToolTip = New System.Windows.Forms.ToolTip(Me.components)
+        Me.ReminderTimer = New System.Windows.Forms.Timer(Me.components)
         Me.MainIconContextMenuStrip.SuspendLayout()
         Me.CommandToolStrip.SuspendLayout()
-        CType(Me.RemindersBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.RemindersDataGridView, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.RemindersDGVContextMenuStrip.SuspendLayout()
+        CType(Me.RemindersBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.RemindersSplitContainer, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.RemindersSplitContainer.Panel1.SuspendLayout()
         Me.RemindersSplitContainer.Panel2.SuspendLayout()
@@ -235,6 +236,10 @@ Partial Class RemindersForm
         Me.ReminderTextBox.Size = New System.Drawing.Size(546, 92)
         Me.ReminderTextBox.TabIndex = 0
         '
+        'ReminderTimer
+        '
+        Me.ReminderTimer.Interval = 5000
+        '
         'RemindersForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -250,9 +255,9 @@ Partial Class RemindersForm
         Me.MainIconContextMenuStrip.ResumeLayout(False)
         Me.CommandToolStrip.ResumeLayout(False)
         Me.CommandToolStrip.PerformLayout()
-        CType(Me.RemindersBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.RemindersDataGridView, System.ComponentModel.ISupportInitialize).EndInit()
         Me.RemindersDGVContextMenuStrip.ResumeLayout(False)
+        CType(Me.RemindersBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
         Me.RemindersSplitContainer.Panel1.ResumeLayout(False)
         Me.RemindersSplitContainer.Panel2.ResumeLayout(False)
         CType(Me.RemindersSplitContainer, System.ComponentModel.ISupportInitialize).EndInit()
@@ -285,4 +290,5 @@ Partial Class RemindersForm
     Friend WithEvents DeleteReminderToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
     Friend WithEvents ChangeActivityToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ReminderTimer As Timer
 End Class

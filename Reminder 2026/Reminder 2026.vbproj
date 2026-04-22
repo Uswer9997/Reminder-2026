@@ -109,6 +109,12 @@
     <Compile Include="Views\EditReminderForm.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Views\DisplayRemindersForm.Designer.vb">
+      <DependentUpon>DisplayRemindersForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DisplayRemindersForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Views\RemindersForm.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -142,6 +148,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Views\EditReminderForm.resx">
       <DependentUpon>EditReminderForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\DisplayRemindersForm.resx">
+      <DependentUpon>DisplayRemindersForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\RemindersForm.resx">
       <DependentUpon>RemindersForm.vb</DependentUpon>

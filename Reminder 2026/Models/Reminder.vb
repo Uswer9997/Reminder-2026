@@ -3,14 +3,16 @@
 ''' </summary>
 Public Class Reminder
     Inherits Notifier
+    Implements ICloneable
 
     Private _Number As Integer
     Private _PeriodicityText As String
     Private _IsActive As Boolean
     Private _Text As String
-    Private _DateTo As DateTime
     Private _DateFrom As DateTime
-    Private _NextDate As DateTime
+    Private _DateTo As Nullable(Of DateTime)
+    Private _NextDate As Nullable(Of DateTime)
+    Private _ExecIfLate As Boolean
 
     ''' <summary>
     ''' Номер.
@@ -68,12 +70,12 @@ Public Class Reminder
     ''' Дата окончания выполнения.
     ''' </summary>
     ''' <returns></returns>
-    Public Property DateTo As DateTime
+    Public Property DateTo As Nullable(Of DateTime)
         Get
             Return _DateTo
         End Get
         Set
-            SetValue(Of DateTime)(_DateTo, Value)
+            SetValue(Of Nullable(Of DateTime))(_DateTo, Value)
         End Set
     End Property
 
@@ -81,12 +83,25 @@ Public Class Reminder
     ''' Дата следующего выполнения.
     ''' </summary>
     ''' <returns></returns>
-    Public Property NextDate As DateTime
+    Public Property NextDate As Nullable(Of DateTime)
         Get
             Return _NextDate
         End Get
         Set
-            SetValue(Of DateTime)(_NextDate, Value)
+            SetValue(Of Nullable(Of DateTime))(_NextDate, Value)
+        End Set
+    End Property
+
+    ''' <summary>
+    ''' Флаг выполнения если напоминание опаздывает.
+    ''' </summary>
+    ''' <returns></returns>
+    Public Property ExecIfLate As Boolean
+        Get
+            Return _ExecIfLate
+        End Get
+        Set
+            SetValue(Of Boolean)(_ExecIfLate, Value)
         End Set
     End Property
 
@@ -107,9 +122,15 @@ Public Class Reminder
     End Property
 
     Public Sub New()
+        Me.IsActive = True
         Me.DateFrom = DateTime.Now
         Dim today As DateTime = DateTime.Now
         Me.DateTo = New DateTime(today.Year, today.Month, today.Day, 23, 59, 0)
     End Sub
 
+    Public Function Clone() As Object Implements ICloneable.Clone
+        Dim MeClone As Reminder = Me.MemberwiseClone()
+        MeClone.Periodicity = CType(Me.Periodicity, ICloneable).Clone()
+        Return MeClone
+    End Function
 End Class
