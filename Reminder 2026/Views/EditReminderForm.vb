@@ -154,38 +154,42 @@
     Private Sub SetNextTime(ByVal currentReminder As Reminder)
         Dim thisMoment As DateTime = DateTime.Now
 
-        If currentReminder.Periodicity.IsPeriodic = True Then
-            Dim newNextDate As DateTime ' дата следующего выполнения
-            ' установим текущее значение даты следующего выполнения
-            If currentReminder.NextDate Is Nothing Then
-                newNextDate = currentReminder.DateFrom ' отсчёт от начала выполнения
-            Else
-                newNextDate = currentReminder.NextDate ' отсчёт от предыдущей даты выполнения
+
+        Dim newNextDate As DateTime ' дата следующего выполнения
+        ' установим текущее значение даты следующего выполнения
+        If currentReminder.NextDate Is Nothing Then
+            newNextDate = currentReminder.DateFrom ' отсчёт от начала выполнения
+        Else
+            newNextDate = currentReminder.NextDate ' отсчёт от предыдущей даты выполнения
+        End If
+        ' установим (изменим) дату следующего выполнения
+        Select Case currentReminder.Periodicity.FrequencyOfRepeate
+            Case Repetitions.SomeMinuts
+                currentReminder.NextDate = newNextDate.AddMinutes(currentReminder.Periodicity.Interval.TotalMinutes)
+            Case Repetitions.SomeHours
+                currentReminder.NextDate = newNextDate.AddHours(currentReminder.Periodicity.Interval.TotalHours)
+            Case Repetitions.SomeDays
+                currentReminder.NextDate = newNextDate.AddDays(currentReminder.Periodicity.Interval.TotalDays)
+            Case Repetitions.EveryMonth
+                currentReminder.NextDate = newNextDate.AddMonths(1)
+            Case Repetitions.EveryYear
+                currentReminder.NextDate = newNextDate.AddYears(1)
+            Case Repetitions.Once
+                currentReminder.NextDate = Nothing
+        End Select
+
+        ' если напоминание не бесконечное проверим необходимость его деактивации.
+        If currentReminder.ExecForever = False Then
+            ' если следующий момент выполнения превышает дату окончания выполнения
+            If currentReminder.NextDate > currentReminder.DateTo Then
+                currentReminder.IsActive = False
+                currentReminder.NextDate = Nothing
             End If
-            ' установим (изменим) дату следующего выполнения
-            Select Case currentReminder.Periodicity.FrequencyOfRepeate
-                Case Repetitions.SomeMinuts
-                    currentReminder.NextDate = newNextDate.AddMinutes(currentReminder.Periodicity.Interval.TotalMinutes)
-                Case Repetitions.SomeHours
-                    currentReminder.NextDate = newNextDate.AddHours(currentReminder.Periodicity.Interval.TotalHours)
-                Case Repetitions.SomeDays
-                    currentReminder.NextDate = newNextDate.AddDays(currentReminder.Periodicity.Interval.TotalDays)
-                Case Repetitions.EveryMonth
-                    currentReminder.NextDate = newNextDate.AddMonths(1)
-                Case Repetitions.EveryYear
-                    currentReminder.NextDate = newNextDate.AddYears(1)
-            End Select
-        End If
 
-        ' если следующий момент выполнения превышает дату окончания выполнения
-        If currentReminder.NextDate > currentReminder.DateTo Then
-            currentReminder.IsActive = False
-            currentReminder.NextDate = Nothing
-        End If
-
-        ' если создано напоминание с прошедшими датами
-        If currentReminder.DateTo < thisMoment Then
-            currentReminder.IsActive = False
+            ' если создано напоминание с прошедшими датами
+            If currentReminder.DateTo < thisMoment Then
+                currentReminder.IsActive = False
+            End If
         End If
     End Sub
 

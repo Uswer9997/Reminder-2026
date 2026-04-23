@@ -239,7 +239,7 @@ Public Class RemindersForm
 
     End Sub
 
-#Region "Commands"
+#Region "Commands" ' команды меню
     ''' <summary>
     ''' Команда в меню формы для создания напоминания.
     ''' </summary>
@@ -342,7 +342,7 @@ Public Class RemindersForm
         Hide()
         SaveReminders()
         If AppExit = False Then
-            e.Cancel = True
+            e.Cancel = True ' отмена закрытия приложения
         End If
     End Sub
 
@@ -352,7 +352,7 @@ Public Class RemindersForm
     Private Sub SaveReminders()
         Try
             Dim serializer As New Xml.Serialization.XmlSerializer(GetType(List(Of Reminder)))
-            Reminders = RemindersBindingSource.List.Cast(Of Reminder).ToList()
+            'Reminders = RemindersBindingSource.DataSource
             Using fs As New System.IO.FileStream(sourceFile, FileMode.Create)
                 serializer.Serialize(fs, Reminders)
             End Using
@@ -366,6 +366,7 @@ Public Class RemindersForm
     End Sub
 
 #Region "MainContextMenu"
+    ' Команды контекстного меню иконки приложения в трее
 
     ''' <summary>
     ''' Команда отображения формы настройки напоминаний.
