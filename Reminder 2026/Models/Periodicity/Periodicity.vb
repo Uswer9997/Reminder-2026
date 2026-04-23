@@ -43,7 +43,7 @@ Public MustInherit Class Periodicity
     ''' Описание задания.
     ''' </summary>
     ''' <returns></returns>
-    Public Property Text As String
+    Public Overridable Property Text As String
         Get
             Return _Text
         End Get

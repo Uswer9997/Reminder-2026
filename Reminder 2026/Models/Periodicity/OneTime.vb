@@ -15,6 +15,15 @@ Public Class OneTime
         End Get
     End Property
 
+    Public Overrides Property Text As String
+        Get
+            Return _Text
+        End Get
+        Set(value As String)
+
+        End Set
+    End Property
+
     Public Overrides Property FrequencyOfRepeate As Repetitions
         Get
             Return Repetitions.Once

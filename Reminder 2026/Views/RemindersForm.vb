@@ -329,6 +329,12 @@ Public Class RemindersForm
 #End Region
 #End Region
 
+    Private Sub ShowRemindersForm()
+        Me.ShowInTaskbar = True
+        Me.WindowState = FormWindowState.Normal
+        Me.Show()
+    End Sub
+
     Private Sub RemindersForm_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
         Hide()
         SaveReminders()
@@ -353,9 +359,7 @@ Public Class RemindersForm
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
     Private Sub RemindersToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RemindersToolStripMenuItem.Click
-        Me.ShowInTaskbar = True
-        Me.WindowState = FormWindowState.Normal
-        Me.Show()
+        ShowRemindersForm()
     End Sub
 
     ''' <summary>
@@ -381,6 +385,10 @@ Public Class RemindersForm
             IsActiveToolStripMenuItem.Checked = True
             ReminderTimer.Start()
         End If
+    End Sub
+
+    Private Sub ReminderNotifyIcon_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles ReminderNotifyIcon.MouseDoubleClick
+        ShowRemindersForm()
     End Sub
 
 #End Region
