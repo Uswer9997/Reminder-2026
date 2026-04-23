@@ -30,7 +30,7 @@ Public Class RemindersForm
         Reminders = New List(Of Reminder)
         LoadReminders() ' загрузим сохранённые напоминания
         AddHandler RemindersBindingSource.ListChanged, AddressOf ReNumberReminders
-        RemindersBindingSource.DataSource = Reminders ' привяжем задания к объекту привязке
+        RemindersBindingSource.DataSource = Reminders ' привяжем задания к объекту привязки
         ConfigureReminderDataGridView() ' настроим сетку для отображения напоминаний
         ReminderTextBox.DataBindings.Add("Text", RemindersBindingSource, "Text") ' 
         RemindersBindingSource.ResetBindings(False) ' вызовем обновление объекта привязки
@@ -39,15 +39,17 @@ Public Class RemindersForm
 
 
     Private Sub LoadReminders()
-        Dim serializer As New Xml.Serialization.XmlSerializer(GetType(List(Of Reminder)))
-        ' создадим пустой файл если его нет
-        If Not IO.File.Exists(sourceFile) Then
-            SaveReminders()
-        End If
-
-        Using fs As New System.IO.FileStream(sourceFile, FileMode.Open)
-            Me.Reminders = serializer.Deserialize(fs)
-        End Using
+        Try
+            Dim serializer As New Xml.Serialization.XmlSerializer(GetType(List(Of Reminder)))
+            ' загрузим напоминания если файл существует
+            If IO.File.Exists(sourceFile) Then
+                Using fs As New System.IO.FileStream(sourceFile, FileMode.Open)
+                    Me.Reminders = serializer.Deserialize(fs)
+                End Using
+            End If
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Ошибка чтения напоминаний из файла.", MessageBoxButtons.OK)
+        End Try
 
         'Reminders.Add(New Reminder() With {.Number = 1,
         '                                   .IsActive = True,
@@ -102,7 +104,7 @@ Public Class RemindersForm
         RemindersDataGridView.Columns.Add(DateNextColumn)
 
         Dim DateToColumn As New DataGridViewTextBoxColumn
-        DateToColumn.DataPropertyName = NameOf(Reminder.DateTo)
+        DateToColumn.DataPropertyName = "DateToText"
         DateToColumn.HeaderText = "Выполнять до"
         RemindersDataGridView.Columns.Add(DateToColumn)
 
@@ -329,6 +331,9 @@ Public Class RemindersForm
 #End Region
 #End Region
 
+    ''' <summary>
+    ''' Отображает форму настройки напоминаний.
+    ''' </summary>
     Private Sub ShowRemindersForm()
         Me.ShowInTaskbar = True
         Me.WindowState = FormWindowState.Normal
@@ -343,12 +348,23 @@ Public Class RemindersForm
         End If
     End Sub
 
+    ''' <summary>
+    ''' Записывает напоминания в файл.
+    ''' </summary>
     Private Sub SaveReminders()
-        Dim serializer As New Xml.Serialization.XmlSerializer(GetType(List(Of Reminder)))
-        Reminders = RemindersBindingSource.List.Cast(Of Reminder).ToList()
-        Using fs As New System.IO.FileStream(sourceFile, FileMode.OpenOrCreate)
-            serializer.Serialize(fs, Reminders)
-        End Using
+        Try
+            Dim serializer As New Xml.Serialization.XmlSerializer(GetType(List(Of Reminder)))
+            Reminders = RemindersBindingSource.List.Cast(Of Reminder).ToList()
+            Using fs As New System.IO.FileStream(sourceFile, FileMode.Create)
+                serializer.Serialize(fs, Reminders)
+            End Using
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Ошибка записи напоминаний", MessageBoxButtons.OK)
+        End Try
+    End Sub
+
+    Private Sub ReminderNotifyIcon_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles ReminderNotifyIcon.MouseDoubleClick
+        ShowRemindersForm()
     End Sub
 
 #Region "MainContextMenu"
@@ -385,10 +401,6 @@ Public Class RemindersForm
             IsActiveToolStripMenuItem.Checked = True
             ReminderTimer.Start()
         End If
-    End Sub
-
-    Private Sub ReminderNotifyIcon_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles ReminderNotifyIcon.MouseDoubleClick
-        ShowRemindersForm()
     End Sub
 
 #End Region

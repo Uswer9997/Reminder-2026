@@ -52,6 +52,7 @@
         ReminderTextBox.DataBindings.Add("Text", Me.Reminder, "Text")
         LateCheckBox.DataBindings.Add("Checked", Me.Reminder, "ExecIfLate")
 
+        ' установим соответствующие радиобуттоны
         Select Case Me.Reminder.Periodicity.FrequencyOfRepeate
             Case Repetitions.SomeMinuts
                 MinutsRadioButton.Checked = True
@@ -69,6 +70,10 @@
             Case Else
                 OnceRadioButton.Checked = True
         End Select
+
+        If Me.Reminder.ExecForever = True Then
+            DateToCheckBox.Checked = False
+        End If
     End Sub
 
     Private Sub OkButton_Click(sender As Object, e As EventArgs) Handles OkButton.Click
@@ -77,7 +82,9 @@
         SetNextTime(Me.Reminder)
         ' если снят флаг конечной даты 
         If DateToCheckBox.Checked = False Then
-            Me.Reminder.DateTo = Nothing
+            Me.Reminder.ExecForever = True
+        Else
+            Me.Reminder.ExecForever = False
         End If
         Me.DialogResult = DialogResult.OK
         Close()

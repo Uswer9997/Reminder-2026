@@ -13,9 +13,11 @@ Public Class Reminder
     Private _IsActive As Boolean
     Private _Text As String
     Private _DateFrom As DateTime
-    Private _DateTo As Nullable(Of DateTime)
+    Private _DateTo As DateTime
     Private _NextDate As Nullable(Of DateTime)
     Private _ExecIfLate As Boolean
+    Private _ExecForever As Boolean
+    Private ReadOnly _DateToText As String
 
     ''' <summary>
     ''' Номер.
@@ -73,12 +75,12 @@ Public Class Reminder
     ''' Дата окончания выполнения.
     ''' </summary>
     ''' <returns></returns>
-    Public Property DateTo As Nullable(Of DateTime)
+    Public Property DateTo As DateTime
         Get
             Return _DateTo
         End Get
         Set
-            SetValue(Of Nullable(Of DateTime))(_DateTo, Value)
+            SetValue(Of DateTime)(_DateTo, Value)
         End Set
     End Property
 
@@ -109,7 +111,20 @@ Public Class Reminder
     End Property
 
     ''' <summary>
-    ''' Интервал выполнения для повторяющихся напоминаний.
+    ''' Фгал бесконечно выполняемого напоминания.
+    ''' </summary>
+    ''' <returns></returns>
+    Public Property ExecForever As Boolean
+        Get
+            Return _ExecForever
+        End Get
+        Set
+            SetValue(Of Boolean)(_ExecForever, Value)
+        End Set
+    End Property
+
+    ''' <summary>
+    ''' Периодичность выполнения напоминаний.
     ''' </summary>
     ''' <returns></returns>
     Public Property Periodicity As Periodicity
@@ -122,6 +137,19 @@ Public Class Reminder
     Public ReadOnly Property PeriodicityText As String
         Get
             Return Periodicity.Text
+        End Get
+    End Property
+
+    ''' <summary>
+    ''' Обёртка свойства конечной даты для привязки.
+    ''' </summary>
+    ''' <returns></returns>
+    Public ReadOnly Property DateToText As String
+        Get
+            If ExecForever = True Then
+                Return "Бесконечно"
+            End If
+            Return DateTo.ToString()
         End Get
     End Property
 
@@ -138,15 +166,4 @@ Public Class Reminder
         Return MeClone
     End Function
 
-    'Public Function GetSchema() As XmlSchema Implements IXmlSerializable.GetSchema
-    '    Return Nothing
-    'End Function
-
-    'Public Sub ReadXml(reader As XmlReader) Implements IXmlSerializable.ReadXml
-    '    Me.DateFrom = reader.ReadContentAsDateTime
-    'End Sub
-
-    'Public Sub WriteXml(writer As XmlWriter) Implements IXmlSerializable.WriteXml
-    '    Throw New NotImplementedException()
-    'End Sub
 End Class

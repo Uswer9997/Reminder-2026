@@ -65,5 +65,4 @@ Public MustInherit Class Periodicity
         End Set
     End Property
 
-
 End Class
