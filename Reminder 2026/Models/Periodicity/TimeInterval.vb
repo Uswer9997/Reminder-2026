@@ -1,43 +1,28 @@
-﻿Public Class TimeInterval
-    Inherits Notifier
-    Implements IPeriodicity, ICloneable
+﻿''' <summary>
+''' Описывает интервал повторяющегося напоминания.
+''' </summary>
+<Serializable>
+Public Class TimeInterval
+    Inherits Periodicity
+    Implements ICloneable
 
-    Private _IsPeriodic As Boolean
-    Private _Interval As TimeSpan
-    Private _Text As String
     Private _FrequencyOfRepeate As Repetitions
 
-    Public ReadOnly Property IsPeriodic As Boolean Implements IPeriodicity.IsPeriodic
+    Public Overrides ReadOnly Property IsPeriodic As Boolean
         Get
             Return True
         End Get
     End Property
 
-    Public Property Interval As TimeSpan Implements IPeriodicity.Interval
-        Get
-            Return _Interval
-        End Get
-        Set
-            SetValue(Of TimeSpan)(_Interval, Value)
-        End Set
-    End Property
-
-    Public Property Text As String Implements IPeriodicity.Text
-        Get
-            Return _Text
-        End Get
-        Set
-            SetValue(Of String)(_Text, Value)
-        End Set
-    End Property
-
-
-    Public Property FrequencyOfRepeate As Repetitions Implements IPeriodicity.FrequencyOfRepeate
+    Public Overrides Property FrequencyOfRepeate As Repetitions
         Get
             Return _FrequencyOfRepeate
         End Get
-        Set
-            SetValue(Of Repetitions)(_FrequencyOfRepeate, Value)
+        Set(value As Repetitions)
+            If value = Repetitions.Once Then
+                Throw New InvalidOperationException("Нельзя установить значение Once для данного типа.")
+            End If
+            SetValue(Of Repetitions)(_FrequencyOfRepeate, value)
         End Set
     End Property
 

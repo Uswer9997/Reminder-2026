@@ -188,7 +188,7 @@
     ''' Устанавливает периодичность напоминания в соответствии с выбранными параметрами.
     ''' </summary>
     Private Sub BuildPeriodicy()
-        Dim periodic As IPeriodicity = New OneTime()
+        Dim periodic As Periodicity = New OneTime()
 
         Select Case SelectedPeriodicity
             Case Repetitions.Once

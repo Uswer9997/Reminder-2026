@@ -46,25 +46,27 @@ Public Class RemindersForm
         End If
 
         Using fs As New System.IO.FileStream(sourceFile, FileMode.Open)
-            serializer.Deserialize(fs)
+            Me.Reminders = serializer.Deserialize(fs)
         End Using
 
-        Reminders.Add(New Reminder() With {.Number = 1,
-                                           .IsActive = True,
-                                           .Text = "Test",
-                                           .DateFrom = DateTime.Now,
-                                           .DateTo = .DateFrom.AddDays(1),
-                                           .NextDate = Nothing,
-                                           .ExecIfLate = True,
-                                           .Periodicity = New OneTime()})
-        Reminders.Add(New Reminder() With {.Number = 2,
-                                           .IsActive = False,
-                                           .Text = "Задание 2",
-                                           .DateFrom = DateTime.Now,
-                                           .DateTo = .DateFrom.AddDays(1),
-                                           .NextDate = Now,
-                                           .ExecIfLate = True,
-                                           .Periodicity = New TimeInterval() With {.Interval = New TimeSpan(100000), .Text = "Каждый день"}})
+        'Reminders.Add(New Reminder() With {.Number = 1,
+        '                                   .IsActive = True,
+        '                                   .Text = "Test",
+        '                                   .DateFrom = DateTime.Now,
+        '                                   .DateTo = .DateFrom.AddDays(1),
+        '                                   .NextDate = Nothing,
+        '                                   .ExecIfLate = True,
+        '                                   .Periodicity = New OneTime()})
+        'Reminders.Add(New Reminder() With {.Number = 2,
+        '                                   .IsActive = False,
+        '                                   .Text = "Задание 2",
+        '                                   .DateFrom = DateTime.Now,
+        '                                   .DateTo = .DateFrom.AddDays(1),
+        '                                   .NextDate = Now,
+        '                                   .ExecIfLate = True,
+        '                                   .Periodicity = New TimeInterval() With {.Interval = New TimeSpan(100000),
+        '                                                                           .Text = "Каждый день",
+        '                                                                           .FrequencyOfRepeate = Repetitions.SomeDays}})
 
     End Sub
 
@@ -337,6 +339,7 @@ Public Class RemindersForm
 
     Private Sub SaveReminders()
         Dim serializer As New Xml.Serialization.XmlSerializer(GetType(List(Of Reminder)))
+        Reminders = RemindersBindingSource.List.Cast(Of Reminder).ToList()
         Using fs As New System.IO.FileStream(sourceFile, FileMode.OpenOrCreate)
             serializer.Serialize(fs, Reminders)
         End Using

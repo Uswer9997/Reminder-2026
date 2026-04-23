@@ -2,29 +2,20 @@
 ''' <summary>
 ''' Описывает интервал однократного напоминания.
 ''' </summary>
+<Serializable>
 Public Class OneTime
-    Implements IPeriodicity, ICloneable
+    Inherits Periodicity
+    Implements ICloneable
 
     Private _Text As String = "Один раз"
 
-    Public ReadOnly Property IsPeriodic As Boolean Implements IPeriodicity.IsPeriodic
+    Public Overrides ReadOnly Property IsPeriodic As Boolean
         Get
             Return False
         End Get
     End Property
 
-    Public Property Text As String Implements IPeriodicity.Text
-        Get
-            Return _Text
-        End Get
-        Set
-            _Text = Value
-        End Set
-    End Property
-
-    Public Property Interval As TimeSpan Implements IPeriodicity.Interval
-
-    Public Property FrequencyOfRepeate As Repetitions Implements IPeriodicity.FrequencyOfRepeate
+    Public Overrides Property FrequencyOfRepeate As Repetitions
         Get
             Return Repetitions.Once
         End Get

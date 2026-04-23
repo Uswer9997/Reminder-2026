@@ -97,7 +97,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\Base\Notifier.vb" />
-    <Compile Include="Models\Periodicity\IPeriodicity.vb" />
+    <Compile Include="Models\Periodicity\Periodicity.vb" />
     <Compile Include="Models\Periodicity\OneTime.vb" />
     <Compile Include="Models\Periodicity\Repetitions.vb" />
     <Compile Include="Models\Periodicity\TimeInterval.vb" />

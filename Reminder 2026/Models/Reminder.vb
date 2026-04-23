@@ -112,8 +112,7 @@ Public Class Reminder
     ''' Интервал выполнения для повторяющихся напоминаний.
     ''' </summary>
     ''' <returns></returns>
-    <System.Xml.Serialization.XmlIgnoreAttribute>
-    Public Property Periodicity As IPeriodicity
+    Public Property Periodicity As Periodicity
 
     ''' <summary>
     ''' Обёртка свойства периодичности для привязки.
