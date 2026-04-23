@@ -22,6 +22,7 @@ Partial Class DisplayRemindersForm
     'Не изменяйте ее в редакторе исходного кода.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(DisplayRemindersForm))
         Me.RemindersTextBox = New System.Windows.Forms.TextBox()
         Me.SuspendLayout()
         '
@@ -44,6 +45,7 @@ Partial Class DisplayRemindersForm
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(319, 196)
         Me.Controls.Add(Me.RemindersTextBox)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "DisplayRemindersForm"
         Me.Text = "Напоминания"
         Me.ResumeLayout(False)

@@ -149,7 +149,7 @@ Public Class Reminder
             If ExecForever = True Then
                 Return "Бесконечно"
             End If
-            Return DateTo.ToString()
+            Return DateTo.ToString("g")
         End Get
     End Property
 
