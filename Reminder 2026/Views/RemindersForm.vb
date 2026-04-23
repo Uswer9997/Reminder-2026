@@ -224,6 +224,7 @@ Public Class RemindersForm
             ' у не повторяющихся напоминаний сразу снимаем флаг выполнения,
             ' так как их выполнение в текущем методе считается произошедшим.
             currentReminder.IsActive = False
+            currentReminder.NextDate = Nothing
         End If
 
         ' если напоминание не бесконечное проверим необходимость его деактивации.
