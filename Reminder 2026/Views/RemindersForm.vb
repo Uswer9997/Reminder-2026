@@ -199,13 +199,6 @@ Public Class RemindersForm
     Private Sub SetNextTime(ByVal currentReminder As Reminder)
         Dim thisMoment As DateTime = DateTime.Now
 
-        ' если наступил момент окончания напоминаний.
-        If currentReminder.DateTo < thisMoment Then
-            currentReminder.IsActive = False
-            currentReminder.NextDate = Nothing
-            Return
-        End If
-
         If currentReminder.Periodicity.IsPeriodic = True Then
             Dim newNextDate As DateTime ' дата следующего выполнения
             ' установим текущее значение даты следующего выполнения
@@ -231,14 +224,19 @@ Public Class RemindersForm
             ' у не повторяющихся напоминаний сразу снимаем флаг выполнения,
             ' так как их выполнение в текущем методе считается произошедшим.
             currentReminder.IsActive = False
-            Return
         End If
 
-        ' если следующий момент выполнения превышает дату окончания выполнения
-        If currentReminder.NextDate > currentReminder.DateTo Then
-            currentReminder.IsActive = False
-            currentReminder.NextDate = Nothing
+        ' если напоминание не бесконечное проверим необходимость его деактивации.
+        If currentReminder.ExecForever = False Then
+            ' если следующий момент выполнения превышает дату окончания выполнения
+            ' или наступил момент окончания напоминания.
+            If (currentReminder.NextDate > currentReminder.DateTo) Or
+               (currentReminder.DateTo < thisMoment) Then
+                currentReminder.IsActive = False
+                currentReminder.NextDate = Nothing
+            End If
         End If
+
     End Sub
 
 #Region "Commands"
