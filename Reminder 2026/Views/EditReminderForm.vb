@@ -157,11 +157,6 @@
 
         Dim newNextDate As DateTime ' дата следующего выполнения
         ' установим текущее значение даты следующего выполнения
-        'If currentReminder.NextDate Is Nothing Then
-        '    newNextDate = currentReminder.DateFrom ' отсчёт от начала выполнения
-        'Else
-        '    newNextDate = currentReminder.NextDate ' отсчёт от предыдущей даты выполнения
-        'End If
         newNextDate = currentReminder.DateFrom ' отсчёт от начала выполнения
         ' докрутим дату следующего выполнения пока она не превысит текущий момент
         While newNextDate < thisMoment
