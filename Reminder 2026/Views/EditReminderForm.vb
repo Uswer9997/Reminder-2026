@@ -217,9 +217,13 @@
                 periodic.Interval = TimeSpan.FromMinutes(minuts)
                 periodic.FrequencyOfRepeate = Repetitions.SomeMinuts
 
+                Dim endMinut As Integer = minuts Mod 10
+
                 If minuts = 1 Then
                     periodic.Text = $"Каждую минуту"
-                ElseIf minuts < 5 Then
+                ElseIf endMinut = 1 Then
+                    periodic.Text = $"Каждую {minuts} минуту"
+                ElseIf endMinut < 5 And ((minuts > 21) Or (minuts < 10)) Then
                     periodic.Text = $"Каждые {minuts} минуты"
                 Else
                     periodic.Text = $"Каждые {minuts} минут"
