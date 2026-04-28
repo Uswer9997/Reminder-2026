@@ -383,6 +383,15 @@ Public Class RemindersForm
     End Sub
 
     ''' <summary>
+    ''' Команда отображения информационного окна.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub AboutToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AboutToolStripMenuItem.Click
+        AboutProgramForm.Show()
+    End Sub
+
+    ''' <summary>
     ''' Команда закрытия приложения.
     ''' </summary>
     ''' <param name="sender"></param>

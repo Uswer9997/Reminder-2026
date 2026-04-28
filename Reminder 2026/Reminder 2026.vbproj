@@ -102,6 +102,10 @@
     <Compile Include="Models\Periodicity\Repetitions.vb" />
     <Compile Include="Models\Periodicity\TimeInterval.vb" />
     <Compile Include="Models\Reminder.vb" />
+    <Compile Include="Views\AboutProgramForm.Designer.vb">
+      <DependentUpon>AboutProgramForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AboutProgramForm.vb" />
     <Compile Include="Views\BoolFormatter.vb" />
     <Compile Include="Views\EditReminderForm.Designer.vb">
       <DependentUpon>EditReminderForm.vb</DependentUpon>
@@ -146,6 +150,9 @@
     <Compile Include="Views\Shared\FormHelper.vb" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Views\AboutProgramForm.resx">
+      <DependentUpon>AboutProgramForm.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\EditReminderForm.resx">
       <DependentUpon>EditReminderForm.vb</DependentUpon>
     </EmbeddedResource>

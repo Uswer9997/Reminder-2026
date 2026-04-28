@@ -46,6 +46,7 @@ Partial Class RemindersForm
         Me.ReminderTextBox = New System.Windows.Forms.TextBox()
         Me.RemindersToolTip = New System.Windows.Forms.ToolTip(Me.components)
         Me.ReminderTimer = New System.Windows.Forms.Timer(Me.components)
+        Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MainIconContextMenuStrip.SuspendLayout()
         Me.CommandToolStrip.SuspendLayout()
         CType(Me.RemindersDataGridView, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -67,14 +68,14 @@ Partial Class RemindersForm
         '
         'MainIconContextMenuStrip
         '
-        Me.MainIconContextMenuStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RemindersToolStripMenuItem, Me.IsActiveToolStripMenuItem, Me.ExitToolStripMenuItem})
+        Me.MainIconContextMenuStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RemindersToolStripMenuItem, Me.IsActiveToolStripMenuItem, Me.AboutToolStripMenuItem, Me.ExitToolStripMenuItem})
         Me.MainIconContextMenuStrip.Name = "MainIconContextMenuStrip"
-        Me.MainIconContextMenuStrip.Size = New System.Drawing.Size(153, 70)
+        Me.MainIconContextMenuStrip.Size = New System.Drawing.Size(181, 114)
         '
         'RemindersToolStripMenuItem
         '
         Me.RemindersToolStripMenuItem.Name = "RemindersToolStripMenuItem"
-        Me.RemindersToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.RemindersToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
         Me.RemindersToolStripMenuItem.Text = "Напоминания"
         '
         'IsActiveToolStripMenuItem
@@ -82,13 +83,13 @@ Partial Class RemindersForm
         Me.IsActiveToolStripMenuItem.Checked = True
         Me.IsActiveToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
         Me.IsActiveToolStripMenuItem.Name = "IsActiveToolStripMenuItem"
-        Me.IsActiveToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.IsActiveToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
         Me.IsActiveToolStripMenuItem.Text = "Активен"
         '
         'ExitToolStripMenuItem
         '
         Me.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem"
-        Me.ExitToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.ExitToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
         Me.ExitToolStripMenuItem.Text = "Выход"
         '
         'CommandToolStrip
@@ -240,6 +241,12 @@ Partial Class RemindersForm
         '
         Me.ReminderTimer.Interval = 60000
         '
+        'AboutToolStripMenuItem
+        '
+        Me.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem"
+        Me.AboutToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.AboutToolStripMenuItem.Text = "О программе"
+        '
         'RemindersForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -291,4 +298,5 @@ Partial Class RemindersForm
     Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
     Friend WithEvents ChangeActivityToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ReminderTimer As Timer
+    Friend WithEvents AboutToolStripMenuItem As ToolStripMenuItem
 End Class
