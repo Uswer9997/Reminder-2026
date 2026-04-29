@@ -79,13 +79,13 @@
     Private Sub OkButton_Click(sender As Object, e As EventArgs) Handles OkButton.Click
         Me.Reminder.IsActive = True
         BuildPeriodicy()
-        SetNextTime(Me.Reminder)
         ' если снят флаг конечной даты 
         If DateToCheckBox.Checked = False Then
             Me.Reminder.ExecForever = True
         Else
             Me.Reminder.ExecForever = False
         End If
+        SetNextTime(Me.Reminder)
         Me.DialogResult = DialogResult.OK
         Close()
     End Sub
