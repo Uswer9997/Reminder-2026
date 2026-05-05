@@ -8,6 +8,9 @@ Public Class RemindersForm
     ''' </summary>
     Private AppExit As Boolean = False
 
+    ''' <summary>
+    ''' Путь к файлу для чтения/записи напоминаний.
+    ''' </summary>
     Private sourceFile As String = Path.Combine(Application.StartupPath, "Reminders.xml")
 
     ''' <summary>
@@ -37,12 +40,15 @@ Public Class RemindersForm
         ReminderTimer.Start()
     End Sub
 
-
+    ''' <summary>
+    ''' Загружает напоминания в коллекцию из файла.
+    ''' </summary>
     Private Sub LoadReminders()
         Try
-            Dim serializer As New Xml.Serialization.XmlSerializer(GetType(List(Of Reminder)))
             ' загрузим напоминания если файл существует
             If IO.File.Exists(sourceFile) Then
+                Dim serializer As New Xml.Serialization.XmlSerializer(GetType(List(Of Reminder)))
+
                 Using fs As New System.IO.FileStream(sourceFile, FileMode.Open)
                     Me.Reminders = serializer.Deserialize(fs)
                 End Using
@@ -50,26 +56,6 @@ Public Class RemindersForm
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Ошибка чтения напоминаний из файла.", MessageBoxButtons.OK)
         End Try
-
-        'Reminders.Add(New Reminder() With {.Number = 1,
-        '                                   .IsActive = True,
-        '                                   .Text = "Test",
-        '                                   .DateFrom = DateTime.Now,
-        '                                   .DateTo = .DateFrom.AddDays(1),
-        '                                   .NextDate = Nothing,
-        '                                   .ExecIfLate = True,
-        '                                   .Periodicity = New OneTime()})
-        'Reminders.Add(New Reminder() With {.Number = 2,
-        '                                   .IsActive = False,
-        '                                   .Text = "Задание 2",
-        '                                   .DateFrom = DateTime.Now,
-        '                                   .DateTo = .DateFrom.AddDays(1),
-        '                                   .NextDate = Now,
-        '                                   .ExecIfLate = True,
-        '                                   .Periodicity = New TimeInterval() With {.Interval = New TimeSpan(100000),
-        '                                                                           .Text = "Каждый день",
-        '                                                                           .FrequencyOfRepeate = Repetitions.SomeDays}})
-
     End Sub
 
     ''' <summary>
@@ -147,7 +133,6 @@ Public Class RemindersForm
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
     Private Sub ReminderTimer_Tick(sender As Object, e As EventArgs) Handles ReminderTimer.Tick
-        Dim ThisMoment As DateTime = DateTime.Now
         ReminderTimer.Stop()
 
         For Each cRem As Reminder In RemindersBindingSource
@@ -175,17 +160,20 @@ Public Class RemindersForm
     ''' <summary>
     ''' Проверяет напоминание на предмет наступления момента его выполнения.
     ''' </summary>
-    ''' <param name="currentReminder">Проверяемое напоминание.</param>
+    ''' <param name="verifiableReminder">Проверяемое напоминание.</param>
     ''' <returns>Возвращает True если напоминание необходимо выполнить и False в противном случае.</returns>
-    Private Function RequiredToComplete(ByVal currentReminder As Reminder) As Boolean
+    Private Function RequiredToComplete(ByVal verifiableReminder As Reminder) As Boolean
         Dim thisMoment As DateTime = DateTime.Now
         ' проверяем поле даты следующего выполнения.
-        If (currentReminder.NextDate IsNot Nothing) AndAlso (currentReminder.NextDate < thisMoment) Then
+        If (verifiableReminder.NextDate IsNot Nothing) AndAlso (verifiableReminder.NextDate < thisMoment) Then
             Return True
         End If
 
-        ' если включен флаг "выполнять, когда опаздывает", то ориентируемся на дату начала напоминания.
-        If (currentReminder.NextDate Is Nothing) And currentReminder.ExecIfLate And (currentReminder.DateFrom < thisMoment) Then
+        ' если включен флаг "выполнять, когда опаздывает", то проверим опоздание ориентируясь по дате окончания напоминания.
+        If (verifiableReminder.NextDate IsNot Nothing) And verifiableReminder.ExecIfLate And (verifiableReminder.DateTo < thisMoment) Then
+            ' здесь делаем проверку того, что выполнение было запланировано, т.е. NextDate <> Nothing, но выполнено не было
+            ' и истекло время выполнения, т.е. DateTo < thisMoment.
+            ' Но, т.к. установлен флаг "выполнять, когда опаздывает", то всё равно сообщим о необходимости выполнения напоминания.
             Return True
         End If
 
