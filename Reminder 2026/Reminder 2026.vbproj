@@ -96,6 +96,7 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationEvents.vb" />
     <Compile Include="Models\Base\Notifier.vb" />
     <Compile Include="Models\Periodicity\Periodicity.vb" />
     <Compile Include="Models\Periodicity\OneTime.vb" />
@@ -105,7 +106,9 @@
     <Compile Include="Views\AboutProgramForm.Designer.vb">
       <DependentUpon>AboutProgramForm.vb</DependentUpon>
     </Compile>
-    <Compile Include="Views\AboutProgramForm.vb" />
+    <Compile Include="Views\AboutProgramForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Views\BoolFormatter.vb" />
     <Compile Include="Views\EditReminderForm.Designer.vb">
       <DependentUpon>EditReminderForm.vb</DependentUpon>

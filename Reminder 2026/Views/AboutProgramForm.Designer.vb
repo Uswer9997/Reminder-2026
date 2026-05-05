@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class AboutProgramForm
     Inherits System.Windows.Forms.Form
 
     'Форма переопределяет dispose для очистки списка компонентов.
-    <System.Diagnostics.DebuggerNonUserCode()>
+    <System.Diagnostics.DebuggerNonUserCode()> _
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -22,6 +22,7 @@ Partial Class AboutProgramForm
     'Не изменяйте ее в редакторе исходного кода.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(AboutProgramForm))
         Me.AboutProgramLabel = New System.Windows.Forms.Label()
         Me.TextLabel1 = New System.Windows.Forms.Label()
         Me.TextLabel2 = New System.Windows.Forms.Label()
@@ -113,6 +114,7 @@ Partial Class AboutProgramForm
         Me.Controls.Add(Me.AboutProgramLabel)
         Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(204, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Margin = New System.Windows.Forms.Padding(4)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
@@ -131,9 +133,4 @@ Partial Class AboutProgramForm
     Friend WithEvents AutorLabel As Label
     Friend WithEvents DescriptionTextBox As TextBox
     Friend WithEvents Label1 As Label
-
-    Private Sub AboutProgramForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        DescriptionTextBox.Text = $"Простой напоминатель для ваших задач. Позволяет не забыть сделать что-то вовремя, не пропустить важную встречу. {vbCrLf} 
-Программа бесплатна как для частного, так и для коммерческого использования."
-    End Sub
 End Class
