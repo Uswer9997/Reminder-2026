@@ -170,9 +170,10 @@ Public Class RemindersForm
         End If
 
         ' если включен флаг "выполнять, когда опаздывает", то проверим опоздание ориентируясь по дате окончания напоминания.
-        If (verifiableReminder.NextDate IsNot Nothing) And verifiableReminder.ExecIfLate And (verifiableReminder.DateTo < thisMoment) Then
+        If (verifiableReminder.NextDate IsNot Nothing) And verifiableReminder.ExecIfLate And (verifiableReminder.DateTo < thisMoment) And
+           (verifiableReminder.ExecForever = False) Then
             ' здесь делаем проверку того, что выполнение было запланировано, т.е. NextDate <> Nothing, но выполнено не было
-            ' и истекло время выполнения, т.е. DateTo < thisMoment.
+            ' при этом истекло время выполнения, т.е. DateTo < thisMoment, а также учитываем, что напоминание не бесконечное (ExecForever = False).
             ' Но, т.к. установлен флаг "выполнять, когда опаздывает", то всё равно сообщим о необходимости выполнения напоминания.
             Return True
         End If
