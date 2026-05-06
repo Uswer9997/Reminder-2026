@@ -165,17 +165,28 @@ Public Class RemindersForm
     Private Function RequiredToComplete(ByVal verifiableReminder As Reminder) As Boolean
         Dim thisMoment As DateTime = DateTime.Now
         ' проверяем поле даты следующего выполнения.
-        If (verifiableReminder.NextDate IsNot Nothing) AndAlso (verifiableReminder.NextDate < thisMoment) Then
-            Return True
+        ' Если есть дата следующего выполнения и она уже наступила.
+        If (verifiableReminder.NextDate IsNot Nothing) AndAlso (verifiableReminder.NextDate <= thisMoment) Then
+            ' если дата окончания выполнения ещё не наступила или бесконечное напоминание.
+            If (verifiableReminder.DateTo > thisMoment) Or (verifiableReminder.ExecForever = True) Then
+                Return True
+            End If
+
+            ' Если включен флаг "выполнять, когда опаздывает". 
+            If verifiableReminder.ExecIfLate Then
+                ' Если мы здесь, то выполнение было запланировано, т.е. NextDate <> Nothing, но выполнено не было.
+                ' При этом истекло время выполнения, т.е. DateTo < thisMoment, а также напоминание не бесконечное (ExecForever = False).
+                ' Но, т.к. установлен флаг "выполнять, когда опаздывает", то всё равно сообщим о необходимости выполнения напоминания.
+                Return True
+            End If
         End If
 
-        ' если включен флаг "выполнять, когда опаздывает", то проверим опоздание ориентируясь по дате окончания напоминания.
-        If (verifiableReminder.NextDate IsNot Nothing) And verifiableReminder.ExecIfLate And (verifiableReminder.DateTo < thisMoment) And
-           (verifiableReminder.ExecForever = False) Then
-            ' здесь делаем проверку того, что выполнение было запланировано, т.е. NextDate <> Nothing, но выполнено не было
-            ' при этом истекло время выполнения, т.е. DateTo < thisMoment, а также учитываем, что напоминание не бесконечное (ExecForever = False).
-            ' Но, т.к. установлен флаг "выполнять, когда опаздывает", то всё равно сообщим о необходимости выполнения напоминания.
-            Return True
+        ' для однократного напоминания, которое почему-то не имеет даты следующего выполнения, но активно
+        If verifiableReminder.Periodicity.FrequencyOfRepeate = Repetitions.Once Then
+            ' ориентируемся на дату начала
+            If verifiableReminder.DateFrom < thisMoment Then
+                Return True
+            End If
         End If
 
         Return False
