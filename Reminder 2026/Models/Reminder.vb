@@ -166,4 +166,33 @@ Public Class Reminder
         Return MeClone
     End Function
 
+    ''' <summary>
+    ''' Устанавливает дату следующего выполнения, от текущего момента времени.
+    ''' </summary>
+    ''' <param name="thisMoment">Текущий момент времени.</param>
+    Public Sub SetNextTime(ByVal thisMoment As DateTime)
+        Dim newNextDate As DateTime ' дата следующего выполнения
+        ' установим текущее значение даты следующего выполнения
+        newNextDate = Me.DateFrom ' отсчёт от начала выполнения
+        ' докрутим дату следующего выполнения пока она не превысит текущий момент
+        While newNextDate < thisMoment
+            ' установим дату следующего выполнения
+            Select Case Me.Periodicity.FrequencyOfRepeate
+                Case Repetitions.SomeMinuts
+                    newNextDate = newNextDate.AddMinutes(Me.Periodicity.Interval.TotalMinutes)
+                Case Repetitions.SomeHours
+                    newNextDate = newNextDate.AddHours(Me.Periodicity.Interval.TotalHours)
+                Case Repetitions.SomeDays
+                    newNextDate = newNextDate.AddDays(Me.Periodicity.Interval.TotalDays)
+                Case Repetitions.EveryMonth
+                    newNextDate = newNextDate.AddMonths(1)
+                Case Repetitions.EveryYear
+                    newNextDate = newNextDate.AddYears(1)
+                Case Repetitions.Once
+                    newNextDate = thisMoment
+            End Select
+        End While
+
+        Me.NextDate = newNextDate
+    End Sub
 End Class
