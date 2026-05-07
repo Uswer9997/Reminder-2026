@@ -121,6 +121,9 @@
         SetDateForm.ShowDialog()
         If SetDateForm.DialogResult = DialogResult.OK Then
             Me.Reminder.DateFrom = SetDateForm.DateAndTime
+            If Me.Reminder.DateTo < Me.Reminder.DateFrom Then
+                Me.Reminder.DateTo = New DateTime(Me.Reminder.DateFrom.Year, Me.Reminder.DateFrom.Month, Me.Reminder.DateFrom.Day, 23, 59, 0)
+            End If
         End If
         SetDateForm.Dispose()
     End Sub
@@ -134,6 +137,9 @@
         SetDateForm.ShowDialog()
         If SetDateForm.DialogResult = DialogResult.OK Then
             Me.Reminder.DateTo = SetDateForm.DateAndTime
+            If Me.Reminder.DateFrom > Me.Reminder.DateTo Then
+                Me.Reminder.DateFrom = New DateTime(Me.Reminder.DateTo.Year, Me.Reminder.DateTo.Month, Me.Reminder.DateTo.Day, 0, 0, 1)
+            End If
         End If
         SetDateForm.Dispose()
     End Sub
