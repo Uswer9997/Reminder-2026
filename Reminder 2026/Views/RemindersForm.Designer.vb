@@ -28,6 +28,7 @@ Partial Class RemindersForm
         Me.MainIconContextMenuStrip = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.RemindersToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.IsActiveToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ExitToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CommandToolStrip = New System.Windows.Forms.ToolStrip()
         Me.AddReminderToolStripButton = New System.Windows.Forms.ToolStripButton()
@@ -46,7 +47,8 @@ Partial Class RemindersForm
         Me.ReminderTextBox = New System.Windows.Forms.TextBox()
         Me.RemindersToolTip = New System.Windows.Forms.ToolTip(Me.components)
         Me.ReminderTimer = New System.Windows.Forms.Timer(Me.components)
-        Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SettingsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.PlaySoundToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MainIconContextMenuStrip.SuspendLayout()
         Me.CommandToolStrip.SuspendLayout()
         CType(Me.RemindersDataGridView, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -68,9 +70,9 @@ Partial Class RemindersForm
         '
         'MainIconContextMenuStrip
         '
-        Me.MainIconContextMenuStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RemindersToolStripMenuItem, Me.IsActiveToolStripMenuItem, Me.AboutToolStripMenuItem, Me.ExitToolStripMenuItem})
+        Me.MainIconContextMenuStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RemindersToolStripMenuItem, Me.IsActiveToolStripMenuItem, Me.SettingsToolStripMenuItem, Me.AboutToolStripMenuItem, Me.ExitToolStripMenuItem})
         Me.MainIconContextMenuStrip.Name = "MainIconContextMenuStrip"
-        Me.MainIconContextMenuStrip.Size = New System.Drawing.Size(181, 114)
+        Me.MainIconContextMenuStrip.Size = New System.Drawing.Size(181, 136)
         '
         'RemindersToolStripMenuItem
         '
@@ -85,6 +87,12 @@ Partial Class RemindersForm
         Me.IsActiveToolStripMenuItem.Name = "IsActiveToolStripMenuItem"
         Me.IsActiveToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
         Me.IsActiveToolStripMenuItem.Text = "Активен"
+        '
+        'AboutToolStripMenuItem
+        '
+        Me.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem"
+        Me.AboutToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.AboutToolStripMenuItem.Text = "О программе"
         '
         'ExitToolStripMenuItem
         '
@@ -241,11 +249,20 @@ Partial Class RemindersForm
         '
         Me.ReminderTimer.Interval = 60000
         '
-        'AboutToolStripMenuItem
+        'SettingsToolStripMenuItem
         '
-        Me.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem"
-        Me.AboutToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
-        Me.AboutToolStripMenuItem.Text = "О программе"
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.PlaySoundToolStripMenuItem})
+        Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
+        Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.SettingsToolStripMenuItem.Text = "Настройки"
+        '
+        'PlaySoundToolStripMenuItem
+        '
+        Me.PlaySoundToolStripMenuItem.Checked = True
+        Me.PlaySoundToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.PlaySoundToolStripMenuItem.Name = "PlaySoundToolStripMenuItem"
+        Me.PlaySoundToolStripMenuItem.Size = New System.Drawing.Size(216, 22)
+        Me.PlaySoundToolStripMenuItem.Text = "Озвучивать напоминания"
         '
         'RemindersForm
         '
@@ -299,4 +316,6 @@ Partial Class RemindersForm
     Friend WithEvents ChangeActivityToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ReminderTimer As Timer
     Friend WithEvents AboutToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents SettingsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents PlaySoundToolStripMenuItem As ToolStripMenuItem
 End Class

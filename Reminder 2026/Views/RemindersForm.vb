@@ -2,6 +2,9 @@
 Imports System.IO
 Imports Reminder_2026
 
+''' <summary>
+''' Главная форма приложения. При её закрытии приложение закрывается.
+''' </summary>
 Public Class RemindersForm
     ''' <summary>
     ''' Признак завершения работы программы.
@@ -24,12 +27,14 @@ Public Class RemindersForm
     ''' </summary>
     Public Reminders As List(Of Reminder)
 
+
     Public Sub New()
 
         ' Этот вызов является обязательным для конструктора.
         InitializeComponent()
 
         ' Добавить код инициализации после вызова InitializeComponent().
+        LoadAppSettings() ' загрузим настройки приложения
         Reminders = New List(Of Reminder)
         LoadReminders() ' загрузим сохранённые напоминания
         AddHandler RemindersBindingSource.ListChanged, AddressOf ReNumberReminders
@@ -38,6 +43,14 @@ Public Class RemindersForm
         ReminderTextBox.DataBindings.Add("Text", RemindersBindingSource, "Text") ' 
         RemindersBindingSource.ResetBindings(False) ' вызовем обновление объекта привязки
         ReminderTimer.Start()
+    End Sub
+
+    ''' <summary>
+    ''' Загружает настройки приложения и устанавливает контролы с ними связанные в необходимое состояние.
+    ''' </summary>
+    Private Sub LoadAppSettings()
+        PlaySoundToolStripMenuItem.Checked = My.Settings.PlaySound ' проигрывать или нет звук напоминаний
+
     End Sub
 
     ''' <summary>
@@ -390,6 +403,21 @@ Public Class RemindersForm
         Else
             IsActiveToolStripMenuItem.Checked = True
             ReminderTimer.Start()
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' Команда включения и отключения звука напоминаний.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub PlaySoundToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PlaySoundToolStripMenuItem.Click
+        If PlaySoundToolStripMenuItem.Checked = True Then
+            PlaySoundToolStripMenuItem.Checked = False
+            My.Settings.PlaySound = False
+        Else
+            PlaySoundToolStripMenuItem.Checked = True
+            My.Settings.PlaySound = True
         End If
     End Sub
 
