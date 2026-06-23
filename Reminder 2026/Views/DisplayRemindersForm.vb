@@ -35,8 +35,4 @@ Public Class DisplayRemindersForm
         End If
     End Sub
 
-    Private Sub DisplayRemindersForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
-        Dim MeOwner As RemindersForm = Me.Owner
-        MeOwner.DisplayReminderForm = Nothing
-    End Sub
 End Class

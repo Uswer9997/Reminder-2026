@@ -165,7 +165,7 @@ Public Class RemindersForm
                 ' тут показываем напоминание
                 If DisplayReminderForm Is Nothing Then
                     DisplayReminderForm = New DisplayRemindersForm()
-                    DisplayReminderForm.Owner = Me
+                    AddHandler DisplayReminderForm.FormClosing, AddressOf DisplayReminderFormClosing
                     DisplayReminderForm.Show()
                 End If
 
@@ -241,6 +241,16 @@ Public Class RemindersForm
             End If
         End If
 
+    End Sub
+
+    ''' <summary>
+    ''' Обработчик закрытия формы отображения напоминаний.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub DisplayReminderFormClosing(sender As Object, e As FormClosingEventArgs)
+        RemoveHandler DisplayReminderForm.FormClosing, AddressOf DisplayReminderFormClosing
+        DisplayReminderForm = Nothing
     End Sub
 
 #Region "Commands" ' команды меню
@@ -357,6 +367,7 @@ Public Class RemindersForm
     ''' </summary>
     Private Sub SaveReminders()
         _ReminderService.SavePeriodicReminders()
+        _ReminderService.SaveAnnualDates()
     End Sub
 
     Private Sub ReminderNotifyIcon_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles ReminderNotifyIcon.MouseDoubleClick
