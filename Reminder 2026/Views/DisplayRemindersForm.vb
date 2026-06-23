@@ -6,7 +6,7 @@ Public Class DisplayRemindersForm
     ''' </summary>
     Private SoundFile As String = IO.Path.Combine(Application.StartupPath, "Reminder.wav")
 
-    Public Property Reminders As New System.ComponentModel.BindingList(Of PeriodicReminder)
+    Public Property Reminders As New System.ComponentModel.BindingList(Of Reminder)
 
     ''' <summary>
     ''' Плеер для воспроизведения звуков.
@@ -27,7 +27,7 @@ Public Class DisplayRemindersForm
 
     Private Sub RemindersChanged(sender As Object, e As ListChangedEventArgs)
         If e.ListChangedType = ListChangedType.ItemAdded Then
-            Dim addedReminder As PeriodicReminder = Reminders(e.NewIndex)
+            Dim addedReminder As Reminder = Reminders(e.NewIndex)
             RemindersTextBox.AppendText(addedReminder.NextDate.ToString + " " + addedReminder.Text + vbNewLine)
             If My.Settings.PlaySound = True Then
                 Player.Play()
