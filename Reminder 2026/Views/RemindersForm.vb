@@ -12,9 +12,14 @@ Public Class RemindersForm
     Private AppExit As Boolean = False
 
     ''' <summary>
-    ''' Путь к файлу для чтения/записи напоминаний.
+    ''' Сервис отображения сообщений об ошибках.
     ''' </summary>
-    Private sourceFile As String = Path.Combine(Application.StartupPath, "Reminders.xml")
+    Private _NotificationSrv As NotificationService
+
+    ''' <summary>
+    ''' Сервис чтения и записи напоминаний в файлы.
+    ''' </summary>
+    Private _ReminderService As ReminderService
 
     ''' <summary>
     ''' Ссылка на форму отображения напоминаний.
@@ -23,9 +28,14 @@ Public Class RemindersForm
     Friend DisplayReminderForm As DisplayRemindersForm
 
     ''' <summary>
-    ''' Коллекция напоминаний.
+    ''' Ссылка на форму отображения ежегодных дат.
     ''' </summary>
-    Public Reminders As List(Of Reminder)
+    Friend _AnnualDatesForm As AnnualDatesForm
+
+    ''' <summary>
+    ''' Коллекция периодических напоминаний.
+    ''' </summary>
+    Public Property PeriodicReminders As List(Of PeriodicReminder)
 
 
     Public Sub New()
@@ -34,11 +44,14 @@ Public Class RemindersForm
         InitializeComponent()
 
         ' Добавить код инициализации после вызова InitializeComponent().
+        _NotificationSrv = New NotificationService()
+        _ReminderService = New ReminderService(_NotificationSrv) ' инжектируем оповещателя об ошибках в сервис чтения/записи напоминаний
         LoadAppSettings() ' загрузим настройки приложения
-        Reminders = New List(Of Reminder)
-        LoadReminders() ' загрузим сохранённые напоминания
+        _ReminderService.LoadReminders() ' загрузим все напоминания
+        PeriodicReminders = _ReminderService.PeriodicReminders
         AddHandler RemindersBindingSource.ListChanged, AddressOf ReNumberReminders
-        RemindersBindingSource.DataSource = Reminders ' привяжем задания к объекту привязки
+        RemindersBindingSource.DataSource = PeriodicReminders ' привяжем задания к объекту привязки
+        RemindersBindingSource.Filter = ""
         ConfigureReminderDataGridView() ' настроим сетку для отображения напоминаний
         ReminderTextBox.DataBindings.Add("Text", RemindersBindingSource, "Text") ' 
         RemindersBindingSource.ResetBindings(False) ' вызовем обновление объекта привязки
@@ -54,24 +67,6 @@ Public Class RemindersForm
     End Sub
 
     ''' <summary>
-    ''' Загружает напоминания в коллекцию из файла.
-    ''' </summary>
-    Private Sub LoadReminders()
-        Try
-            ' загрузим напоминания если файл существует
-            If IO.File.Exists(sourceFile) Then
-                Dim serializer As New Xml.Serialization.XmlSerializer(GetType(List(Of Reminder)))
-
-                Using fs As New System.IO.FileStream(sourceFile, FileMode.Open)
-                    Me.Reminders = serializer.Deserialize(fs)
-                End Using
-            End If
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Ошибка чтения напоминаний из файла.", MessageBoxButtons.OK)
-        End Try
-    End Sub
-
-    ''' <summary>
     ''' Перенумерует список напоминаний.
     ''' </summary>
     ''' <param name="sender"></param>
@@ -82,23 +77,27 @@ Public Class RemindersForm
         Next
     End Sub
 
+    Private Sub RemindersForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+    End Sub
+
     ''' <summary>
     ''' Инициализация DataGridView отображающего напоминания.
     ''' </summary>
     Private Sub ConfigureReminderDataGridView()
         Dim NumberColumn As New DataGridViewTextBoxColumn
-        NumberColumn.DataPropertyName = NameOf(Reminder.Number)
+        NumberColumn.DataPropertyName = NameOf(PeriodicReminder.Number)
         NumberColumn.HeaderText = "№"
         NumberColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
         RemindersDataGridView.Columns.Add(NumberColumn)
 
         Dim DateFromColumn As New DataGridViewTextBoxColumn
-        DateFromColumn.DataPropertyName = NameOf(Reminder.DateFrom)
+        DateFromColumn.DataPropertyName = NameOf(PeriodicReminder.DateFrom)
         DateFromColumn.HeaderText = "Выполнять начиная с"
         RemindersDataGridView.Columns.Add(DateFromColumn)
 
         Dim DateNextColumn As New DataGridViewTextBoxColumn
-        DateNextColumn.DataPropertyName = NameOf(Reminder.NextDate)
+        DateNextColumn.DataPropertyName = NameOf(PeriodicReminder.NextDate)
         DateNextColumn.HeaderText = "Следующий раз"
         RemindersDataGridView.Columns.Add(DateNextColumn)
 
@@ -113,7 +112,7 @@ Public Class RemindersForm
         RemindersDataGridView.Columns.Add(PeriodicColumn)
 
         Dim ActiveColumn As New DataGridViewTextBoxColumn
-        ActiveColumn.DataPropertyName = NameOf(Reminder.IsActive)
+        ActiveColumn.DataPropertyName = NameOf(PeriodicReminder.IsActive)
         ActiveColumn.DefaultCellStyle.FormatProvider = New BoolFormatter()
         ActiveColumn.DefaultCellStyle.Format = "ДаНет"
         ActiveColumn.HeaderText = "Активно"
@@ -148,25 +147,34 @@ Public Class RemindersForm
     Private Sub ReminderTimer_Tick(sender As Object, e As EventArgs) Handles ReminderTimer.Tick
         ReminderTimer.Stop()
 
-        For Each cRem As Reminder In RemindersBindingSource
-            If cRem.IsActive Then
-                If RequiredToComplete(cRem) = True Then
-                    ' тут показываем напоминание
-                    If DisplayReminderForm Is Nothing Then
-                        DisplayReminderForm = New DisplayRemindersForm()
-                        DisplayReminderForm.Owner = Me
-                        DisplayReminderForm.Show()
-                    End If
-
-                    DisplayReminderForm.Reminders.Add(cRem)
-                    SetNextTime(cRem) ' установим следующую дату напоминания.
-                    DisplayReminderForm.BringToFront()
-
-                End If
-            End If
+        For Each cRem As Reminder In _ReminderService.AllReminders
+            Processing(cRem)
         Next
 
         ReminderTimer.Start()
+    End Sub
+
+    ''' <summary>
+    ''' Проверяет напоминание на предмет необходимости выполнения и
+    ''' выполняет его если это необходимо.
+    ''' </summary>
+    ''' <param name="processedReminder">Обрабатываемое напоминание.</param>
+    Private Sub Processing(ByVal processedReminder As Reminder)
+        If processedReminder.IsActive Then
+            If RequiredToComplete(processedReminder) = True Then
+                ' тут показываем напоминание
+                If DisplayReminderForm Is Nothing Then
+                    DisplayReminderForm = New DisplayRemindersForm()
+                    DisplayReminderForm.Owner = Me
+                    DisplayReminderForm.Show()
+                End If
+
+                DisplayReminderForm.Reminders.Add(processedReminder)
+                SetNextTime(processedReminder) ' установим следующую дату напоминания.
+                DisplayReminderForm.BringToFront()
+
+            End If
+        End If
     End Sub
 
 
@@ -195,12 +203,12 @@ Public Class RemindersForm
         End If
 
         ' для однократного напоминания, которое почему-то не имеет даты следующего выполнения, но активно
-        If verifiableReminder.Periodicity.FrequencyOfRepeate = Repetitions.Once Then
-            ' ориентируемся на дату начала
-            If verifiableReminder.DateFrom < thisMoment Then
-                Return True
-            End If
-        End If
+        'If verifiableReminder.Periodicity.FrequencyOfRepeate = Repetitions.Once Then
+        '    ' ориентируемся на дату начала
+        '    If verifiableReminder.DateFrom < thisMoment Then
+        '        Return True
+        '    End If
+        'End If
 
         Return False
     End Function
@@ -208,27 +216,28 @@ Public Class RemindersForm
     ''' <summary>
     ''' Устанавливает дату следующего выполнения и снимает флаг активности при необходимости.
     ''' </summary>
-    ''' <param name="currentReminder">Обрабатываемое напоминание.</param>
-    Private Sub SetNextTime(ByVal currentReminder As Reminder)
+    ''' <param name="processedReminder">Обрабатываемое напоминание.</param>
+    Private Sub SetNextTime(ByVal processedReminder As Reminder)
         Dim thisMoment As DateTime = DateTime.Now
 
-        If currentReminder.Periodicity.IsPeriodic = True Then
-            currentReminder.SetNextTime(thisMoment) ' установим дату следующего выполнения
-        Else
+        processedReminder.SetNextTime(thisMoment) ' установим дату следующего выполнения
+
+        Dim periodicRem As PeriodicReminder = TryCast(processedReminder, PeriodicReminder) ' пробуем выполнить приведение типов
+        If (periodicRem IsNot Nothing) AndAlso (periodicRem.Periodicity.IsPeriodic = False) Then
             ' у не повторяющихся напоминаний сразу снимаем флаг выполнения,
             ' так как их выполнение в текущем методе считается произошедшим.
-            currentReminder.IsActive = False
-            currentReminder.NextDate = Nothing
+            processedReminder.IsActive = False
+            processedReminder.NextDate = Nothing
         End If
 
         ' если напоминание не бесконечное проверим необходимость его деактивации.
-        If currentReminder.ExecForever = False Then
+        If processedReminder.ExecForever = False Then
             ' если следующий момент выполнения превышает дату окончания выполнения
             ' или наступил момент окончания напоминания.
-            If (currentReminder.NextDate > currentReminder.DateTo) Or
-               (currentReminder.DateTo < thisMoment) Then
-                currentReminder.IsActive = False
-                currentReminder.NextDate = Nothing
+            If (processedReminder.NextDate > processedReminder.DateTo) Or
+               (processedReminder.DateTo <= thisMoment) Then
+                processedReminder.IsActive = False
+                processedReminder.NextDate = Nothing
             End If
         End If
 
@@ -324,6 +333,8 @@ Public Class RemindersForm
 #End Region
 #End Region
 
+
+
     ''' <summary>
     ''' Отображает форму настройки напоминаний.
     ''' </summary>
@@ -345,20 +356,32 @@ Public Class RemindersForm
     ''' Записывает напоминания в файл.
     ''' </summary>
     Private Sub SaveReminders()
-        Try
-            Dim serializer As New Xml.Serialization.XmlSerializer(GetType(List(Of Reminder)))
-            'Reminders = RemindersBindingSource.DataSource
-            Using fs As New System.IO.FileStream(sourceFile, FileMode.Create)
-                serializer.Serialize(fs, Reminders)
-            End Using
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Ошибка записи напоминаний", MessageBoxButtons.OK)
-        End Try
+        _ReminderService.SavePeriodicReminders()
     End Sub
 
     Private Sub ReminderNotifyIcon_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles ReminderNotifyIcon.MouseDoubleClick
         ShowRemindersForm()
     End Sub
+
+#Region "Работа с ежегодными датами"
+    ''' <summary>
+    ''' Отображает форму ежегодных дат.
+    ''' </summary>
+    Private Sub ShowAnnualDatesForm()
+        If _AnnualDatesForm Is Nothing Then
+            _AnnualDatesForm = New AnnualDatesForm()
+            _AnnualDatesForm.AnnualDates = _ReminderService.AnnualDates
+            AddHandler _AnnualDatesForm.FormClosing, AddressOf AnnualDatesFormClosing
+        End If
+
+        _AnnualDatesForm.Show()
+    End Sub
+
+    Private Sub AnnualDatesFormClosing(sender As Object, e As FormClosingEventArgs)
+        _ReminderService.SaveAnnualDates()
+        _AnnualDatesForm = Nothing
+    End Sub
+#End Region
 
 #Region "MainContextMenu"
     ' Команды контекстного меню иконки приложения в трее
@@ -370,6 +393,15 @@ Public Class RemindersForm
     ''' <param name="e"></param>
     Private Sub RemindersToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RemindersToolStripMenuItem.Click
         ShowRemindersForm()
+    End Sub
+
+    ''' <summary>
+    ''' Команда отображения формы ежегодных дат.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub AnnualDatesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AnnualDatesToolStripMenuItem.Click
+        ShowAnnualDatesForm()
     End Sub
 
     ''' <summary>

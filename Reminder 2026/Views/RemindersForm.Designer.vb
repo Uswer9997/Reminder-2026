@@ -27,7 +27,12 @@ Partial Class RemindersForm
         Me.ReminderNotifyIcon = New System.Windows.Forms.NotifyIcon(Me.components)
         Me.MainIconContextMenuStrip = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.RemindersToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AnnualDatesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.IsActiveToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
+        Me.SettingsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.PlaySoundToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ExitToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CommandToolStrip = New System.Windows.Forms.ToolStrip()
@@ -47,8 +52,6 @@ Partial Class RemindersForm
         Me.ReminderTextBox = New System.Windows.Forms.TextBox()
         Me.RemindersToolTip = New System.Windows.Forms.ToolTip(Me.components)
         Me.ReminderTimer = New System.Windows.Forms.Timer(Me.components)
-        Me.SettingsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.PlaySoundToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MainIconContextMenuStrip.SuspendLayout()
         Me.CommandToolStrip.SuspendLayout()
         CType(Me.RemindersDataGridView, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -70,34 +73,65 @@ Partial Class RemindersForm
         '
         'MainIconContextMenuStrip
         '
-        Me.MainIconContextMenuStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RemindersToolStripMenuItem, Me.IsActiveToolStripMenuItem, Me.SettingsToolStripMenuItem, Me.AboutToolStripMenuItem, Me.ExitToolStripMenuItem})
+        Me.MainIconContextMenuStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RemindersToolStripMenuItem, Me.AnnualDatesToolStripMenuItem, Me.ToolStripSeparator2, Me.IsActiveToolStripMenuItem, Me.ToolStripSeparator3, Me.SettingsToolStripMenuItem, Me.AboutToolStripMenuItem, Me.ExitToolStripMenuItem})
         Me.MainIconContextMenuStrip.Name = "MainIconContextMenuStrip"
-        Me.MainIconContextMenuStrip.Size = New System.Drawing.Size(181, 136)
+        Me.MainIconContextMenuStrip.Size = New System.Drawing.Size(165, 148)
         '
         'RemindersToolStripMenuItem
         '
         Me.RemindersToolStripMenuItem.Name = "RemindersToolStripMenuItem"
-        Me.RemindersToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.RemindersToolStripMenuItem.Size = New System.Drawing.Size(164, 22)
         Me.RemindersToolStripMenuItem.Text = "Напоминания"
+        '
+        'AnnualDatesToolStripMenuItem
+        '
+        Me.AnnualDatesToolStripMenuItem.Name = "AnnualDatesToolStripMenuItem"
+        Me.AnnualDatesToolStripMenuItem.Size = New System.Drawing.Size(164, 22)
+        Me.AnnualDatesToolStripMenuItem.Text = "Ежегодные даты"
+        '
+        'ToolStripSeparator2
+        '
+        Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
+        Me.ToolStripSeparator2.Size = New System.Drawing.Size(161, 6)
         '
         'IsActiveToolStripMenuItem
         '
         Me.IsActiveToolStripMenuItem.Checked = True
         Me.IsActiveToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
         Me.IsActiveToolStripMenuItem.Name = "IsActiveToolStripMenuItem"
-        Me.IsActiveToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.IsActiveToolStripMenuItem.Size = New System.Drawing.Size(164, 22)
         Me.IsActiveToolStripMenuItem.Text = "Активен"
+        '
+        'ToolStripSeparator3
+        '
+        Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
+        Me.ToolStripSeparator3.Size = New System.Drawing.Size(161, 6)
+        '
+        'SettingsToolStripMenuItem
+        '
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.PlaySoundToolStripMenuItem})
+        Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
+        Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(164, 22)
+        Me.SettingsToolStripMenuItem.Text = "Настройки"
+        '
+        'PlaySoundToolStripMenuItem
+        '
+        Me.PlaySoundToolStripMenuItem.Checked = True
+        Me.PlaySoundToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.PlaySoundToolStripMenuItem.Name = "PlaySoundToolStripMenuItem"
+        Me.PlaySoundToolStripMenuItem.Size = New System.Drawing.Size(216, 22)
+        Me.PlaySoundToolStripMenuItem.Text = "Озвучивать напоминания"
         '
         'AboutToolStripMenuItem
         '
         Me.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem"
-        Me.AboutToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.AboutToolStripMenuItem.Size = New System.Drawing.Size(164, 22)
         Me.AboutToolStripMenuItem.Text = "О программе"
         '
         'ExitToolStripMenuItem
         '
         Me.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem"
-        Me.ExitToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.ExitToolStripMenuItem.Size = New System.Drawing.Size(164, 22)
         Me.ExitToolStripMenuItem.Text = "Выход"
         '
         'CommandToolStrip
@@ -249,21 +283,6 @@ Partial Class RemindersForm
         '
         Me.ReminderTimer.Interval = 60000
         '
-        'SettingsToolStripMenuItem
-        '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.PlaySoundToolStripMenuItem})
-        Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
-        Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
-        Me.SettingsToolStripMenuItem.Text = "Настройки"
-        '
-        'PlaySoundToolStripMenuItem
-        '
-        Me.PlaySoundToolStripMenuItem.Checked = True
-        Me.PlaySoundToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.PlaySoundToolStripMenuItem.Name = "PlaySoundToolStripMenuItem"
-        Me.PlaySoundToolStripMenuItem.Size = New System.Drawing.Size(216, 22)
-        Me.PlaySoundToolStripMenuItem.Text = "Озвучивать напоминания"
-        '
         'RemindersForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -318,4 +337,7 @@ Partial Class RemindersForm
     Friend WithEvents AboutToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents SettingsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents PlaySoundToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents AnnualDatesToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator2 As ToolStripSeparator
+    Friend WithEvents ToolStripSeparator3 As ToolStripSeparator
 End Class

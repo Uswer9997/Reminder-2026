@@ -97,16 +97,31 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationEvents.vb" />
+    <Compile Include="DAL\ReminderService.vb" />
     <Compile Include="Models\Base\Notifier.vb" />
+    <Compile Include="Models\Base\Reminder.vb" />
     <Compile Include="Models\Periodicity\Periodicity.vb" />
     <Compile Include="Models\Periodicity\OneTime.vb" />
     <Compile Include="Models\Periodicity\Repetitions.vb" />
     <Compile Include="Models\Periodicity\TimeInterval.vb" />
-    <Compile Include="Models\Reminder.vb" />
+    <Compile Include="Models\AnnualReminder.vb" />
+    <Compile Include="Models\PeriodicReminder.vb" />
     <Compile Include="Views\AboutProgramForm.Designer.vb">
       <DependentUpon>AboutProgramForm.vb</DependentUpon>
     </Compile>
     <Compile Include="Views\AboutProgramForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\AnnualDateEditForm.Designer.vb">
+      <DependentUpon>AnnualDateEditForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AnnualDateEditForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\AnnualDatesForm.Designer.vb">
+      <DependentUpon>AnnualDatesForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AnnualDatesForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Views\BoolFormatter.vb" />
@@ -144,6 +159,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Views\Shared\SafeActionPerformer.vb" />
     <Compile Include="Views\SetDateAndTimeForm.Designer.vb">
       <DependentUpon>SetDateAndTimeForm.vb</DependentUpon>
     </Compile>
@@ -151,10 +167,17 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Views\Shared\FormHelper.vb" />
+    <Compile Include="Views\Shared\NotificationService.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Views\AboutProgramForm.resx">
       <DependentUpon>AboutProgramForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\AnnualDateEditForm.resx">
+      <DependentUpon>AnnualDateEditForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\AnnualDatesForm.resx">
+      <DependentUpon>AnnualDatesForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\EditReminderForm.resx">
       <DependentUpon>EditReminderForm.vb</DependentUpon>

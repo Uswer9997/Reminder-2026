@@ -3,7 +3,7 @@
     ''' Формируемое напоминание.
     ''' </summary>
     ''' <remarks>Может быть установлен извне для редактирования.</remarks>>
-    Public Property Reminder As Reminder
+    Public Property Reminder As PeriodicReminder
 
     Private MinutsList As List(Of Integer) ' список минут
     Private HoursList As List(Of Integer) ' список часов
@@ -12,7 +12,7 @@
     Public Sub New(ByVal CreateNewReminder As Boolean)
 
         If (CreateNewReminder = True) Or (Me.Reminder Is Nothing) Then
-            Me.Reminder = New Reminder()
+            Me.Reminder = New PeriodicReminder()
             Me.Reminder.Periodicity = New OneTime()
         End If
 
@@ -157,7 +157,7 @@
     ''' Устанавливает дату следующего выполнения.
     ''' </summary>
     ''' <param name="currentReminder">Обрабатываемое напоминание.</param>
-    Private Sub SetNextTime(ByVal currentReminder As Reminder)
+    Private Sub SetNextTime(ByVal currentReminder As PeriodicReminder)
         Dim thisMoment As DateTime = DateTime.Now
 
         ' установим дату следующего выполнения
