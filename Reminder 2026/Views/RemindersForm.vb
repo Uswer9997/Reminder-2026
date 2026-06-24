@@ -390,6 +390,7 @@ Public Class RemindersForm
 
     Private Sub AnnualDatesFormClosing(sender As Object, e As FormClosingEventArgs)
         _ReminderService.SaveAnnualDates()
+        RemoveHandler _AnnualDatesForm.FormClosing, AddressOf AnnualDatesFormClosing
         _AnnualDatesForm = Nothing
     End Sub
 #End Region
